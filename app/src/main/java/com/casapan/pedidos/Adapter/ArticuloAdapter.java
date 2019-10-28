@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.casapan.pedidos.Adapter.Utils.ListItem;
 import com.casapan.pedidos.Model.Articulo;
 import com.casapan.pedidos.Model.HeaderCategoria;
 import com.casapan.pedidos.Model.Pedido;
@@ -21,13 +22,13 @@ import java.util.List;
 
 public class ArticuloAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<FragmentArticulo.ListItem> listArticulo = null;
+    private ArrayList<ListItem> listArticulo = null;
     private Context mContext;
     private LayoutInflater mInflater;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    public ArticuloAdapter(ArrayList<FragmentArticulo.ListItem> listArticulo) {
+    public ArticuloAdapter(ArrayList<ListItem> listArticulo) {
         this.listArticulo = listArticulo;
     }
 

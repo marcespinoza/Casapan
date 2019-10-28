@@ -2,17 +2,15 @@
 <RelativeLayout
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-  <TextView
+    <TextView
       android:id="@+id/descarticulo"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textAlignment="center"
-      android:gravity="center_vertical"
-      android:textSize="20sp"
+      android:layout_centerVertical="true"
+      android:fontFamily="@font/robotolight"
+      android:textSize="17sp"
       android:text="Masa"/>
 
   <LinearLayout
@@ -27,6 +25,7 @@
       android:layout_width="35dp"
       android:layout_height="wrap_content"
       android:textAlignment="center"
+      android:layout_gravity="center_vertical"
       android:background="@drawable/editext_border"
       android:enabled="false"
       android:textSize="20sp"
@@ -38,7 +37,8 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:enabled="false"
-        android:backgroundTint="@color/white"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/editext_border"
         android:textSize="20sp"
         android:text="0"/>
 

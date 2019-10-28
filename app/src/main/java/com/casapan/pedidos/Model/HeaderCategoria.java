@@ -1,8 +1,8 @@
 package com.casapan.pedidos.Model;
 
-import com.casapan.pedidos.Vista.FragmentArticulo;
+import com.casapan.pedidos.Adapter.Utils.ListItem;
 
-public class HeaderCategoria implements FragmentArticulo.ListItem {
+public class HeaderCategoria implements ListItem {
 
     String nombre;
     String id;

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.casapan.pedidos.Adapter.ArticuloAdapter;
+import com.casapan.pedidos.Adapter.Utils.ListItem;
 import com.casapan.pedidos.Model.HeaderCategoria;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Model.Articulo;
@@ -125,11 +126,7 @@ public class FragmentArticulo extends Fragment {
         spinnercategorias.setAdapter(adapterSpinner);
     }
 
-    public interface ListItem {
-        boolean isHeader();
-        String mostrarNombre();
-        String mostrarId();
-    }
+
 
     public void clear () {
         list.clear();

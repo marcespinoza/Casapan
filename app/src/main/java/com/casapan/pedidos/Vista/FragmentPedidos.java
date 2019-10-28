@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +19,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.casapan.pedidos.Adapter.PedidoAdapter;
+import com.casapan.pedidos.Adapter.Utils.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,8 +33,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 
 public class FragmentPedidos extends Fragment {
 
@@ -40,19 +40,23 @@ public class FragmentPedidos extends Fragment {
     FloatingActionButton fab;
     private Boolean isFabOpen = true;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
-    ArticuloDialog aDialog;
+    PedidoDialog aDialog;
     DatabaseHelper db;
     @BindView(R.id.fab2)
     LinearLayout fab2;
     private boolean fabExpanded = false;
     String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final int MULTIPLE_PERMISSIONS = 10;
+    PedidoAdapter pAdapter;
+    RecyclerView recyclerView;
+    ArrayList<ListItem> list = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pedido, container, false);
         ButterKnife.bind(this, view);
+        db = new DatabaseHelper(getActivity());
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_forward);
@@ -67,7 +71,7 @@ public class FragmentPedidos extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                aDialog = ArticuloDialog.newInstance("");
+                aDialog = PedidoDialog.newInstance("");
                 aDialog.show(fm, "Fragment articulo");
             }
         });
@@ -79,6 +83,7 @@ public class FragmentPedidos extends Fragment {
         }
         return view;
     }
+
 
     public void animateFAB(){
         if(isFabOpen){

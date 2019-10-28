@@ -1,7 +1,5 @@
 package com.casapan.pedidos.Vista;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,14 +14,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.casapan.pedidos.Adapter.PedidoAdapter;
+import com.casapan.pedidos.Adapter.Utils.ListItem;
+import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Model.Articulo;
+import com.casapan.pedidos.Model.HeaderCategoria;
 import com.casapan.pedidos.R;
 import com.google.android.material.button.MaterialButton;
 
@@ -33,20 +33,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class ArticuloDialog extends DialogFragment {
+public class PedidoDialog extends DialogFragment {
 
     com.casapan.pedidos.Model.Pedido Pedido;
     RecyclerView recyclerView;
     PedidoAdapter artAdapter;
     RecyclerView.LayoutManager manager;
-    ArrayList<Articulo> aList = new ArrayList<>();
+    ArrayList<ListItem> aList = new ArrayList<>();
     MaterialButton aceptar, cancelar;
+    DatabaseHelper db;
 
        @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.pedido_dialog,container);
         aceptar = rootView.findViewById(R.id.aceptarpedido);
         cancelar = rootView.findViewById(R.id.cancelarpedido);
+        db = new DatabaseHelper(getActivity());
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,22 +64,34 @@ public class ArticuloDialog extends DialogFragment {
          manager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_pedido);
         recyclerView.setLayoutManager(manager);
-
+        cargarArticulos();
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Articulo articulo = new Articulo();
-        articulo.setNombre("Galletita");
-        aList.add(articulo);
-        //ADAPTER
+
+    public void cargarArticulos(){
+        ArrayList<Articulo> lArt = db.getArticulosPorCategoria();
+        String categoria = "";
+        for(int i = 0; i < lArt.size(); i++){
+            if(!categoria.equals(lArt.get(i).getCategoria())){
+                categoria = lArt.get(i).getCategoria();
+                HeaderCategoria headerCategoria = new HeaderCategoria();
+                headerCategoria.setId(lArt.get(i).getIdCategoria());
+                headerCategoria.setNombre(lArt.get(i).getCategoria());
+                aList.add(headerCategoria);
+            }
+            Articulo articulo = new Articulo();
+            articulo.setNombre(lArt.get(i).getNombre());
+            articulo.setId(lArt.get(i).getId());
+            aList.add(articulo);
+        }
+
         artAdapter = new PedidoAdapter(aList);
         recyclerView.setAdapter(artAdapter);
     }
 
-    public static ArticuloDialog newInstance(String Pedido) {
-        ArticuloDialog frag = new ArticuloDialog();
+    public static PedidoDialog newInstance(String Pedido) {
+        PedidoDialog frag = new PedidoDialog();
         return frag;
     }
 
@@ -87,7 +101,7 @@ public class ArticuloDialog extends DialogFragment {
         int width = getActivity().getResources().getDisplayMetrics().widthPixels;
         int height = getActivity().getResources().getDisplayMetrics().heightPixels;
         Window window = getDialog().getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         window.setLayout(width-100, height-700
         );
         window.setGravity(Gravity.CENTER);
