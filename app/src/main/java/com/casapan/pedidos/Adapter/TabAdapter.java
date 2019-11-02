@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.casapan.pedidos.Vista.FragmentArticulo;
+import com.casapan.pedidos.Vista.FragmentConfig;
 import com.casapan.pedidos.Vista.FragmentPedidos;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class TabAdapter extends FragmentStatePagerAdapter {
                 return new FragmentPedidos();
             case 1:
                 return new FragmentArticulo();
+            case 2:
+                return new FragmentConfig();
             default:
                 return null;
         }

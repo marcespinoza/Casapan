@@ -1,4 +1,4 @@
-package com.casapan.pedidos.Model;
+package com.casapan.pedidos.Pojo;
 
 import com.casapan.pedidos.Interface.ListItem;
 

@@ -27,10 +27,12 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TabAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         adapter.addFragment(new FragmentPedidos(), "Pedidos");
         adapter.addFragment(new FragmentArticulo(), "Articulos");
+        adapter.addFragment(new FragmentConfig(), "Configuración");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_pedido);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_pan);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_settings);
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

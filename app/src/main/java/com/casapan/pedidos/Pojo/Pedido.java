@@ -1,10 +1,19 @@
-package com.casapan.pedidos.Model;
+package com.casapan.pedidos.Pojo;
 
 public class Pedido {
 
     String usuario;
     String fecha;
     String obs;
+    String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsuario() {
         return usuario;

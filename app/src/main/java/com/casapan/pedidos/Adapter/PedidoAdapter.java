@@ -15,7 +15,7 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.casapan.pedidos.Interface.ListItem;
-import com.casapan.pedidos.Model.ListaPedido;
+import com.casapan.pedidos.Pojo.ListaPedido;
 import com.casapan.pedidos.R;
 
 import java.util.ArrayList;

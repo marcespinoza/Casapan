@@ -1,25 +1,19 @@
 package com.casapan.pedidos.Vista;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,26 +33,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.casapan.pedidos.Adapter.ArticuloAdapter;
 import com.casapan.pedidos.Adapter.ListaPedidosAdapter;
-import com.casapan.pedidos.Adapter.PedidoAdapter;
 import com.casapan.pedidos.BuildConfig;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
-import com.casapan.pedidos.Model.Articulo;
-import com.casapan.pedidos.Model.HeaderCategoria;
-import com.casapan.pedidos.Model.Pedido;
+import com.casapan.pedidos.Pojo.Pedido;
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.ProgressDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -75,7 +63,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,8 +76,10 @@ public class FragmentPedidos extends Fragment {
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
     PedidoDialog aDialog;
     DatabaseHelper db;
-    @BindView(R.id.fab2)
-    LinearLayout fab2;
+    @BindView(R.id.fab_pedido) FloatingActionButton fabPedido;
+    @BindView(R.id.fab_armatutorta) FloatingActionButton fabTorta;
+    @BindView(R.id.layout_pedido) LinearLayout layoutpedido;
+    @BindView(R.id.layout_torta) LinearLayout layouttorta;
     private boolean fabExpanded = false;
     String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final int MULTIPLE_PERMISSIONS = 10;
@@ -118,7 +107,7 @@ public class FragmentPedidos extends Fragment {
                 animateFAB();
             }
         });
-        fab2.setOnClickListener(new View.OnClickListener() {
+        fabPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -146,13 +135,17 @@ public class FragmentPedidos extends Fragment {
     public void animateFAB(){
         if(isFabOpen){
             fab.startAnimation(rotate_backward);
-            fab2.startAnimation(fab_close);
-            fab2.setClickable(false);
+            layoutpedido.startAnimation(fab_close);
+            layoutpedido.setClickable(false);
+            layouttorta.startAnimation(fab_close);
+            layouttorta.setClickable(false);
             isFabOpen = false;
         } else {
             fab.startAnimation(rotate_forward);
-            fab2.startAnimation(fab_open);
-            fab2.setClickable(true);
+            layoutpedido.startAnimation(fab_open);
+            layoutpedido.setClickable(true);
+            layouttorta.startAnimation(fab_open);
+            layouttorta.setClickable(true);
             isFabOpen = true;
 
         }

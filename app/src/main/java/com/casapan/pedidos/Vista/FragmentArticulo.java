@@ -1,6 +1,5 @@
 package com.casapan.pedidos.Vista;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,10 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.casapan.pedidos.Adapter.ArticuloAdapter;
 import com.casapan.pedidos.Interface.ListItem;
-import com.casapan.pedidos.Model.HeaderCategoria;
+import com.casapan.pedidos.Pojo.HeaderCategoria;
 import com.casapan.pedidos.Database.DatabaseHelper;
-import com.casapan.pedidos.Model.Articulo;
-import com.casapan.pedidos.Model.Categoria;
+import com.casapan.pedidos.Pojo.Articulo;
+import com.casapan.pedidos.Pojo.Categoria;
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.SwipeController;
 

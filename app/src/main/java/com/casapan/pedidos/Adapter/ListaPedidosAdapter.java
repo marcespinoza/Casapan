@@ -4,13 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.casapan.pedidos.Interface.ListItem;
-import com.casapan.pedidos.Model.Pedido;
+import com.casapan.pedidos.Pojo.Pedido;
 import com.casapan.pedidos.R;
 
 import java.util.ArrayList;
@@ -48,12 +48,14 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public static class PedidoHolder extends RecyclerView.ViewHolder {
 
         TextView fecha, usuario, observacion;
+        ImageButton descargarpdf;
 
         public PedidoHolder(@NonNull View itemView) {
             super(itemView);
             fecha = itemView.findViewById(R.id.fecha);
             usuario = itemView.findViewById(R.id.usuario);
             observacion = itemView.findViewById(R.id.observacion);
+            descargarpdf = itemView.findViewById(R.id.descargarpdf);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.casapan.pedidos.Model;
+package com.casapan.pedidos.Pojo;
 
 import androidx.annotation.NonNull;
 

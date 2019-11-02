@@ -4,20 +4,17 @@ package com.casapan.pedidos.Database;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.casapan.pedidos.Model.Articulo;
-import com.casapan.pedidos.Model.Categoria;
-import com.casapan.pedidos.Model.Pedido;
+import com.casapan.pedidos.Pojo.Articulo;
+import com.casapan.pedidos.Pojo.Categoria;
+import com.casapan.pedidos.Pojo.Pedido;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -129,10 +126,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Pedido> getPedidos() {
         ArrayList<Pedido> lPedidos = new ArrayList<Pedido>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from pedido", null );
+        Cursor res =  db.rawQuery( "select * from pedido order by date(fecha) desc", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
             Pedido pedido = new Pedido();
+            pedido.setId(res.getString(0));
             pedido.setUsuario(res.getString(1));
             pedido.setFecha(res.getString(2));
             pedido.setObs(res.getString(3));

@@ -1,12 +1,6 @@
 package com.casapan.pedidos.Vista;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.casapan.pedidos.Adapter.PedidoAdapter;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
-import com.casapan.pedidos.Model.Articulo;
-import com.casapan.pedidos.Model.HeaderCategoria;
-import com.casapan.pedidos.Model.ListaPedido;
+import com.casapan.pedidos.Pojo.Articulo;
+import com.casapan.pedidos.Pojo.HeaderCategoria;
+import com.casapan.pedidos.Pojo.ListaPedido;
 import com.casapan.pedidos.R;
 import com.google.android.material.button.MaterialButton;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
