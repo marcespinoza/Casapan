@@ -1,6 +1,7 @@
 package com.casapan.pedidos.Vista;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
@@ -33,12 +34,12 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tab.getIcon().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                tab.getIcon().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getIcon().setColorFilter(getResources().getColor(R.color.blue_A200),PorterDuff.Mode.SRC_IN);
+                tab.getIcon().setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.blue_grey_500),PorterDuff.Mode.SRC_IN);
             }
 
             @Override

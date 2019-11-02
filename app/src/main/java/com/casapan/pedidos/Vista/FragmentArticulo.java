@@ -1,9 +1,12 @@
 package com.casapan.pedidos.Vista;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -20,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.casapan.pedidos.Adapter.ArticuloAdapter;
-import com.casapan.pedidos.Adapter.Utils.ListItem;
+import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Model.HeaderCategoria;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Model.Articulo;
@@ -126,12 +129,11 @@ public class FragmentArticulo extends Fragment {
         spinnercategorias.setAdapter(adapterSpinner);
     }
 
-
-
     public void clear () {
         list.clear();
         adapter.notifyDataSetChanged();
     }
+
     public void cargarArticulos(){
         ArrayList<Articulo> lArt = dbh.getArticulosPorCategoria();
         String categoria = "";
@@ -172,6 +174,17 @@ public class FragmentArticulo extends Fragment {
                 {
                     adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                     EditarDialog eDialog = new EditarDialog();
+                    eDialog.editar(new EditarDialog.Editar() {
+                        @Override
+                        public void guardarEdicion(String nombre) {
+                            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+                            dbh.updateArticulo(id,nombre);
+                            eDialog.dismiss();
+                            clear();
+                            cargarArticulos();
+                        }
+                    });
                     eDialog.show(getActivity().getSupportFragmentManager(), "EDITAR DIALOGO");
                     eDialog.setDescripcion(descripcion);
                     eDialog.setType(viewType);

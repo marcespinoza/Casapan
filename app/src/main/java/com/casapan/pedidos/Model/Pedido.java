@@ -2,20 +2,16 @@ package com.casapan.pedidos.Model;
 
 public class Pedido {
 
-    String sucursal;
+    String usuario;
     String fecha;
-    String empleado;
-    String producto;
-    String cantidad;
-    String stock;
-    String comentario;
+    String obs;
 
-    public String getSucursal() {
-        return sucursal;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setSucursal(String sucursal) {
-        this.sucursal = sucursal;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getFecha() {
@@ -26,43 +22,11 @@ public class Pedido {
         this.fecha = fecha;
     }
 
-    public String getEmpleado() {
-        return empleado;
+    public String getObs() {
+        return obs;
     }
 
-    public void setEmpleado(String empleado) {
-        this.empleado = empleado;
-    }
-
-    public String getProducto() {
-        return producto;
-    }
-
-    public void setProducto(String producto) {
-        this.producto = producto;
-    }
-
-    public String getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(String cantidad) {
-        cantidad = cantidad;
-    }
-
-    public String getStock() {
-        return stock;
-    }
-
-    public void setStock(String stock) {
-        this.stock = stock;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
+    public void setObs(String obs) {
+        this.obs = obs;
     }
 }

@@ -1,6 +1,8 @@
 package com.casapan.pedidos.Vista;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +24,48 @@ public class EditarDialog extends DialogFragment {
     String descripcion;
     int type;
 
+    public interface Editar{
+        public void guardarEdicion(String nombre);
+    }
+
+    private Editar editar;
+
+    public void editar(Editar editar){
+        this.editar = editar;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.editar_dialog, container, false);
         nombre = v.findViewById(R.id.descripcion);
+        nombre.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                if(s.toString().trim().length()==0){
+                    guardar.setEnabled(false);
+                } else {
+                    guardar.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         guardar = v.findViewById(R.id.guardaredicion);
+        guardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editar.guardarEdicion(nombre.getText().toString());
+            }
+        });
         return v;
     }
 

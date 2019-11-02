@@ -27,6 +27,7 @@ abstract public class SwipeController extends ItemTouchHelper.Callback {
     private ColorDrawable mBackground;
     private int backgroundColor;
     private Drawable deleteDrawable;
+    private Drawable edittDrawable;
     private int intrinsicWidth;
     private int intrinsicHeight;
 
@@ -38,6 +39,7 @@ abstract public class SwipeController extends ItemTouchHelper.Callback {
         mClearPaint = new Paint();
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         deleteDrawable = ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_delete);
+        edittDrawable = ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_edit);
         intrinsicWidth = deleteDrawable.getIntrinsicWidth();
         intrinsicHeight = deleteDrawable.getIntrinsicHeight();
     }

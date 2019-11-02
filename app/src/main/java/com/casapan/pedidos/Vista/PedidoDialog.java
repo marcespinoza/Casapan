@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
+import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.casapan.pedidos.Adapter.PedidoAdapter;
-import com.casapan.pedidos.Adapter.Utils.ListItem;
+import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Model.Articulo;
 import com.casapan.pedidos.Model.HeaderCategoria;
+import com.casapan.pedidos.Model.ListaPedido;
 import com.casapan.pedidos.R;
 import com.google.android.material.button.MaterialButton;
 
@@ -35,24 +36,34 @@ import java.util.ArrayList;
 
 public class PedidoDialog extends DialogFragment {
 
-    com.casapan.pedidos.Model.Pedido Pedido;
+    ListaPedido ListaPedido;
     RecyclerView recyclerView;
     PedidoAdapter artAdapter;
     RecyclerView.LayoutManager manager;
     ArrayList<ListItem> aList = new ArrayList<>();
     MaterialButton aceptar, cancelar;
     DatabaseHelper db;
+    EditText usuario, obser;
+    private OnAceptarBoton onAceptarBoton;
+
+    public interface OnAceptarBoton{
+        void clickbutton(String usuario, ArrayList<ListItem> pedidos, String obser);
+    }
 
        @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.pedido_dialog,container);
         aceptar = rootView.findViewById(R.id.aceptarpedido);
         cancelar = rootView.findViewById(R.id.cancelarpedido);
+        usuario = rootView.findViewById(R.id.usuario);
+        obser = rootView.findViewById(R.id.observacion);
         db = new DatabaseHelper(getActivity());
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ArrayList<ListItem> art = artAdapter.getArticulos();
+                onAceptarBoton.clickbutton(usuario.getText().toString(),art,obser.getText().toString());
+                dismiss();
             }
         });
         cancelar.setOnClickListener(new View.OnClickListener() {
@@ -61,13 +72,16 @@ public class PedidoDialog extends DialogFragment {
                 dismiss();
             }
         });
-         manager = new LinearLayoutManager(getActivity());
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_pedido);
+        manager = new LinearLayoutManager(getActivity());
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_linea_pedido);
         recyclerView.setLayoutManager(manager);
         cargarArticulos();
         return rootView;
     }
 
+    public void setInterface(OnAceptarBoton onAceptarBoton){
+        this.onAceptarBoton=onAceptarBoton;
+    }
 
     public void cargarArticulos(){
         ArrayList<Articulo> lArt = db.getArticulosPorCategoria();
@@ -95,6 +109,10 @@ public class PedidoDialog extends DialogFragment {
         return frag;
     }
 
+    public void guardarPedidos(){
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -107,47 +125,7 @@ public class PedidoDialog extends DialogFragment {
         window.setGravity(Gravity.CENTER);
     }
 
-    private void createPdf(String sometext){
-        // create a new document
-        PdfDocument document = new PdfDocument();
-        // crate a page description
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
-        // start a page
-        PdfDocument.Page page = document.startPage(pageInfo);
-        Canvas canvas = page.getCanvas();
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        canvas.drawCircle(50, 50, 30, paint);
-        paint.setColor(Color.BLACK);
-        canvas.drawText(sometext, 80, 50, paint);
-        //canvas.drawt
-        // finish the page
-        document.finishPage(page);
-// draw text on the graphics object of the page
-        // Create Page 2
-        pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 2).create();
-        page = document.startPage(pageInfo);
-        canvas = page.getCanvas();
-        paint = new Paint();
-        paint.setColor(Color.BLUE);
-        canvas.drawCircle(100, 100, 100, paint);
-        document.finishPage(page);
-        // write the document content
-        String directory_path = Environment.getExternalStorageDirectory().getPath() + "/mypdf/";
-        File file = new File(directory_path);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        String targetPdf = directory_path+"test-2.pdf";
-        File filePath = new File(targetPdf);
-        try {
-            document.writeTo(new FileOutputStream(filePath));
-        } catch (IOException e) {
-            Log.e("main", "error "+e.toString());
-        }
-        // close the document
-        document.close();
-    }
+
 
 
 }

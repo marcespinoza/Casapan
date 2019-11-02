@@ -29,7 +29,8 @@
       android:background="@drawable/editext_border"
       android:enabled="false"
       android:textSize="20sp"
-      android:text="0"/>
+      android:inputType="number"
+      android:hint="0"/>
 
     <EditText
         android:id="@+id/stock"
@@ -40,7 +41,8 @@
         android:layout_gravity="center_vertical"
         android:background="@drawable/editext_border"
         android:textSize="20sp"
-        android:text="0"/>
+        android:inputType="number"
+        android:hint="0"/>
 
 
     <ImageButton
@@ -64,8 +66,8 @@
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_vertical"/>
 
   </LinearLayout>

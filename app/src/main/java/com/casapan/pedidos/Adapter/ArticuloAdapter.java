@@ -4,21 +4,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.casapan.pedidos.Adapter.Utils.ListItem;
-import com.casapan.pedidos.Model.Articulo;
-import com.casapan.pedidos.Model.HeaderCategoria;
-import com.casapan.pedidos.Model.Pedido;
+import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.R;
-import com.casapan.pedidos.Vista.FragmentArticulo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ArticuloAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

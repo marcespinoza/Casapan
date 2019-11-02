@@ -31,12 +31,12 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/blue_A400"
-            app:tabIconTint="@color/icon_tab_color"
+            app:tabBackground="@color/blue_grey_600"
+            app:tabIconTint="@color/blue_grey_500"
             app:tabGravity="fill"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextColor="@color/blue_A200" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/blue_grey_500" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
