@@ -3,14 +3,15 @@ package com.casapan.pedidos.Interface;
 public interface ConfigInterface {
 
      interface Vista{
-
+         void showToast(boolean b);
     }
 
     public interface Modelo{
-        void enviarSucursal();
+        void enviarSucursal(String suc);
     }
 
     public interface Presentador{
-        void guardarSucursal();
+        void guardarSucursal(String suc);
+        void sharedResponse(boolean b);
     }
 }

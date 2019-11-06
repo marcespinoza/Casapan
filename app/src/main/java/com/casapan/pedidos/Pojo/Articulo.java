@@ -8,14 +8,8 @@ public class Articulo implements ListItem {
     String id;
     String categoria;
     String idCategoria;
-
-    public String getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(String idCategoria) {
-        this.idCategoria = idCategoria;
-    }
+    String cantidad;
+    String stock;
 
     public String getCategoria() {
         return categoria;
@@ -25,17 +19,12 @@ public class Articulo implements ListItem {
         this.categoria = categoria;
     }
 
-    public String getId() {
-        return id;
+    public String getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setIdCategoria(String idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     @Override
@@ -44,59 +33,43 @@ public class Articulo implements ListItem {
     }
 
     @Override
-    public String mostrarNombre() {
-        return nombre;
-    }
-
     public String getNombre() {
         return nombre;
     }
 
     @Override
-    public String mostrarId() {
+    public String getId() {
         return id;
     }
 
     @Override
     public String mostrarCantidad() {
-        return null;
+        return cantidad;
     }
 
     @Override
     public String mostrarStock() {
-        return null;
+        return stock;
     }
 
     @Override
-    public void setID(String id) {
-
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
-    public void setNombreArticulo(String nombre) {
-
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Override
     public void setCantidad(String cantidad) {
-
+        this.cantidad = cantidad;
     }
 
     @Override
     public void setStock(String stock) {
-
+        this.stock = stock;
     }
-
-
-    @Override
-    public boolean getchecked() {
-        return false;
-    }
-
-    @Override
-    public void setchecked(boolean b) {
-
-    }
-
 
 }

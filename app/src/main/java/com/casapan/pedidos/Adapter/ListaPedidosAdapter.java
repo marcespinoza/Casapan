@@ -20,8 +20,14 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private ArrayList<Pedido> listPedidos = null;
     private Context mContext;
     private LayoutInflater mInflater;
+    private Pdf pdf;
 
-    public ListaPedidosAdapter(ArrayList<Pedido> listPedidos) {
+    public interface Pdf {
+        void ondownload(String id, String f);
+    }
+
+    public ListaPedidosAdapter(ArrayList<Pedido> listPedidos, Pdf pdf) {
+        this.pdf=pdf;
         this.listPedidos = listPedidos;
     }
 
@@ -38,6 +44,14 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             pedidoHolder.fecha.setText(listPedidos.get(position).getFecha());
             pedidoHolder.usuario.setText(listPedidos.get(position).getUsuario());
             pedidoHolder.observacion.setText(listPedidos.get(position).getObs());
+            pedidoHolder.descargarpdf.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String fecha = pedidoHolder.fecha.getText().toString();
+                    String id = listPedidos.get(position).getId();
+                    pdf.ondownload(id, fecha);
+                }
+            });
     }
 
     @Override

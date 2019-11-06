@@ -2,14 +2,21 @@ package com.casapan.pedidos.Vista;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.casapan.pedidos.Adapter.TabAdapter;
 import com.casapan.pedidos.R;
+import com.casapan.pedidos.Util.Constants;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        tabLayout.getTabAt(0).select();
+        checkSucursal();
     }
+
+    private void checkSucursal() {
+        String sucursal = Constants.getSPreferences(this).getNombreSucursal();
+        if(sucursal.equals("")){
+            tabLayout.getTabAt(2).select();
+            Toast.makeText(this, "Ingrese nombre de sucursal", Toast.LENGTH_LONG).show();
+        }else{
+            tabLayout.getTabAt(0).select();
+        }
+    }
+
 }

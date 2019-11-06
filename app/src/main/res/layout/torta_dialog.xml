@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:layout_margin="15dp"
+        android:gravity="center_horizontal"
+        android:text="ARMA TU TORTA"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/sucursal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cliente"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/telefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Telefono"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/robotobold"
+          android:layout_marginRight="10dp"
+          android:text="Kilogramos"/>
+
+      <androidx.appcompat.widget.AppCompatCheckBox
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layoutDirection="rtl"
+          android:text="3"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="4"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="5"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bizcochuelo"
+            android:fontFamily="@font/robotobold"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="Chocolate"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="Vainilla"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Relleno 1"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dulce de leche"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con hojaldre"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con chocolate"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con rocklet"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con durazno"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema chantilly"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema americana"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema moca"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema bombón"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chantilly con durazno"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chantilly con ananá"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mousse de frutilla"
+                android:layoutDirection="rtl"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Relleno 2"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dulce de leche"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con hojaldre"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con chocolate"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con rocklet"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D. leche con durazno"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema chantilly"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema americana"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema moca"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crema bombón"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chantilly con durazno"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chantilly con ananá"
+                android:layoutDirection="rtl"/>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mousse de frutilla"
+                android:layoutDirection="rtl"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="COLORES (siempre tonos pasteles)"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Blanco"
+          android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Amarillo"
+            android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rosado"
+            android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lila"
+            android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Verde"
+            android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Celeste"
+            android:layoutDirection="rtl"/>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Anaranjado"
+            android:layoutDirection="rtl"/>
+
+    </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="EXTRAS"/>
+
+          <androidx.appcompat.widget.AppCompatCheckBox
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Cereza"
+              android:layoutDirection="rtl"/>
+
+          <androidx.appcompat.widget.AppCompatCheckBox
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Maní"
+              android:layoutDirection="rtl"/>
+
+          <androidx.appcompat.widget.AppCompatCheckBox
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Chocolate rallado"
+              android:layoutDirection="rtl"/>
+
+          <androidx.appcompat.widget.AppCompatCheckBox
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Baño choc. cara superior"
+              android:layoutDirection="rtl"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="60dp"
+              android:hint="TEXTO"/>
+
+      </LinearLayout>
+
+</LinearLayout>
+
+</LinearLayout>

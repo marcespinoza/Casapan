@@ -10,7 +10,7 @@
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:fontFamily="@font/robotolight"
-      android:textSize="17sp"
+      android:textSize="15sp"
       android:text="Masa"/>
 
   <LinearLayout
@@ -27,7 +27,6 @@
       android:textAlignment="center"
       android:layout_gravity="center_vertical"
       android:background="@drawable/editext_border"
-      android:enabled="false"
       android:textSize="20sp"
       android:inputType="number"
       android:hint="0"/>
@@ -37,7 +36,6 @@
         android:layout_width="35dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:enabled="false"
         android:layout_gravity="center_vertical"
         android:background="@drawable/editext_border"
         android:textSize="20sp"
@@ -51,6 +49,7 @@
         android:layout_height="30dp"
         android:layout_marginLeft="6dp"
         android:layout_gravity="center_vertical"
+        android:backgroundTint="@color/green_300"
         android:background="@drawable/ic_add"/>
 
 
@@ -63,12 +62,6 @@
         android:layout_gravity="center_vertical"
         android:background="@drawable/ic_minus"/>
 
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/check"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center_vertical"/>
 
   </LinearLayout>
 

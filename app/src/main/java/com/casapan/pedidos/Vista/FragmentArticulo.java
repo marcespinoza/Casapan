@@ -162,12 +162,15 @@ public class FragmentArticulo extends Fragment {
                 int viewType = viewHolder.getItemViewType();
                 String id = adapter.getId(position);
                 String descripcion = adapter.getNombre(position);
-                if(direction == ItemTouchHelper.LEFT)
-                {
-                    int response = dbh.borrarArticulo(id);
-                    if(response!=-1)
-                      Toast.makeText(getActivity(), "Articulo eliminado", Toast.LENGTH_SHORT).show();
-                      adapter.removeItem(position);
+                if(direction == ItemTouchHelper.LEFT)  {
+                    if(!lArt.get(position).isHeader()){
+                         int response = dbh.borrarArticulo(id);
+                         if(response!=-1)
+                         Toast.makeText(getActivity(), "Articulo eliminado", Toast.LENGTH_SHORT).show();
+                         adapter.removeItem(position);
+                    }else{
+
+                    }
                 }
                 else if (direction == ItemTouchHelper.RIGHT)
                 {
@@ -178,7 +181,11 @@ public class FragmentArticulo extends Fragment {
                         public void guardarEdicion(String nombre) {
                             final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                            dbh.updateArticulo(id,nombre);
+                            if(lArt.get(position).isHeader()){
+                                dbh.updateCategoria(id, nombre);
+                            }else{
+                                dbh.updateArticulo(id,nombre);
+                            }
                             eDialog.dismiss();
                             clear();
                             cargarArticulos();

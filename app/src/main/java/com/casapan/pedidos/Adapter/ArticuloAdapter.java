@@ -46,12 +46,12 @@ public class ArticuloAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(holder.getItemViewType()== TYPE_HEADER)
         {
             HeaderHolder headerHolder = (HeaderHolder) holder;
-            headerHolder.nombreCategoria.setText(listArticulo.get(position).mostrarNombre());
+            headerHolder.nombreCategoria.setText(listArticulo.get(position).getNombre());
         }
         else
         {
             ArticuloHolder articuloHolder = (ArticuloHolder) holder;
-            articuloHolder.nombreArticulo.setText(listArticulo.get(position).mostrarNombre());
+            articuloHolder.nombreArticulo.setText(listArticulo.get(position).getNombre());
         }
     }
 
@@ -76,11 +76,11 @@ public class ArticuloAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public String getId(int position){
-        return listArticulo.get(position).mostrarId();
+        return listArticulo.get(position).getId();
     }
 
     public String getNombre(int position){
-        return listArticulo.get(position).mostrarNombre();
+        return listArticulo.get(position).getNombre();
     }
 
     public static class ArticuloHolder extends RecyclerView.ViewHolder {

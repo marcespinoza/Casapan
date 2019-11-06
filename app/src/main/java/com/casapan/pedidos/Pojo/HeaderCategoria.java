@@ -8,40 +8,24 @@ public class HeaderCategoria implements ListItem {
     String id;
 
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public boolean isHeader() {
         return true;
     }
 
     @Override
-    public String mostrarNombre() {
+    public String getNombre() {
         return nombre;
     }
 
     @Override
-    public String mostrarId() {
+    public String getId() {
         return id;
     }
 
     @Override
     public String mostrarCantidad() {
-        return null;
+        return "0";
     }
 
     @Override
@@ -50,13 +34,13 @@ public class HeaderCategoria implements ListItem {
     }
 
     @Override
-    public void setID(String id) {
+    public void setId(String id) {
 
     }
 
     @Override
-    public void setNombreArticulo(String nombre) {
-
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Override
@@ -69,16 +53,6 @@ public class HeaderCategoria implements ListItem {
 
     }
 
-
-    @Override
-    public boolean getchecked() {
-        return false;
-    }
-
-    @Override
-    public void setchecked(boolean b) {
-
-    }
 
 
 }

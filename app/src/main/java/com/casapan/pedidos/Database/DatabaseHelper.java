@@ -70,6 +70,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //----------INSERT-----------//
+
     public boolean insertarArticulo (String nombre, String categoria) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -117,6 +119,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+
+
+    //--------UPDATE----------//
+
+    public boolean updateArticulo (String id, String nombre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_ID, id);
+        contentValues.put(DESCRIPCION_ARTICULO, nombre);
+        db.update("articulo", contentValues, "id = ? ", new String[] { id } );
+        return true;
+    }
+
+    public boolean updateCategoria (String id, String nombre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_ID, id);
+        contentValues.put(NOMBRE, nombre);
+        db.update("categoria", contentValues, "id = ? ", new String[] { id } );
+        return true;
+    }
+
+    //-----------DELETE---------------//
+
+    public Integer borrarArticulo (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("articulo",
+                "id = ? ",
+                new String[] { id});
+    }
+
+    //----------GET--------------//
+
     public Cursor getPedido(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from pedido where id="+id+"", null );
@@ -138,22 +173,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return lPedidos;
-    }
-
-    public boolean updateArticulo (String id, String nombre) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(KEY_ID, id);
-        contentValues.put(DESCRIPCION_ARTICULO, nombre);
-        db.update("articulo", contentValues, "id = ? ", new String[] { id } );
-        return true;
-    }
-
-    public Integer borrarArticulo (String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("articulo",
-                "id = ? ",
-                new String[] { id});
     }
 
     public ArrayList<Articulo> getArticulosPorCategoria() {

@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +40,9 @@ import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Pojo.Pedido;
 import com.casapan.pedidos.R;
+import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
+import com.casapan.pedidos.Util.ViewAnimation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.itextpdf.text.Document;
@@ -47,6 +50,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -72,22 +76,21 @@ public class FragmentPedidos extends Fragment {
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
-    private Boolean isFabOpen = true;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private Boolean isFabOpen = false;
     PedidoDialog aDialog;
+    TortaDialog tDialog;
     DatabaseHelper db;
     @BindView(R.id.fab_pedido) FloatingActionButton fabPedido;
     @BindView(R.id.fab_armatutorta) FloatingActionButton fabTorta;
-    @BindView(R.id.layout_pedido) LinearLayout layoutpedido;
-    @BindView(R.id.layout_torta) LinearLayout layouttorta;
     private boolean fabExpanded = false;
     String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final int MULTIPLE_PERMISSIONS = 10;
     ListaPedidosAdapter pAdapter;
     @BindView(R.id.recycler_pedidos) RecyclerView recyclerPedido;
     ProgressDialog generarPdf;
-    ArrayList<ListItem> pedidos;
+    ArrayList<ListItem> pedidos = new ArrayList<>();
     Snackbar mySnackbar;
+    String sucursal = "";
 
     @Nullable
     @Override
@@ -96,15 +99,12 @@ public class FragmentPedidos extends Fragment {
         ButterKnife.bind(this, view);
         generarPdf = new ProgressDialog(getContext());
         mySnackbar = Snackbar.make(view, "Pdf generado", Snackbar.LENGTH_LONG);
+        sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
         db = new DatabaseHelper(getActivity());
-        fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_backward);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                animateFAB();
+                animateFAB(view);
             }
         });
         fabPedido.setOnClickListener(new View.OnClickListener() {
@@ -118,43 +118,49 @@ public class FragmentPedidos extends Fragment {
                         insertarPedidos(usuario, pedidos, obs);
                     }
                 });
-                aDialog.show(fm, "Fragment articulo");
+                aDialog.show(fm, "Fragment pedido");
             }
         });
-        animateFAB();
+        fabTorta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                tDialog = TortaDialog.newInstance("");
+                tDialog.show(fm, "Fragment torta");
+            }
+        });
         db = new DatabaseHelper(getActivity());
         int currentApiVersion = Build.VERSION.SDK_INT;
         if(currentApiVersion >=  Build.VERSION_CODES.M)        {
                 checkPermission();
         }
+        ViewAnimation.init(fabTorta);
+        ViewAnimation.init(fabPedido);
         cargarPedidos();
         return view;
     }
 
 
-    public void animateFAB(){
+    public void animateFAB(View v){
+        isFabOpen = ViewAnimation.rotateFab(v, !isFabOpen);
         if(isFabOpen){
-            fab.startAnimation(rotate_backward);
-            layoutpedido.startAnimation(fab_close);
-            layoutpedido.setClickable(false);
-            layouttorta.startAnimation(fab_close);
-            layouttorta.setClickable(false);
-            isFabOpen = false;
-        } else {
-            fab.startAnimation(rotate_forward);
-            layoutpedido.startAnimation(fab_open);
-            layoutpedido.setClickable(true);
-            layouttorta.startAnimation(fab_open);
-            layouttorta.setClickable(true);
-            isFabOpen = true;
-
+            ViewAnimation.showIn(fabPedido);
+            ViewAnimation.showIn(fabTorta);
+        }else{
+            ViewAnimation.showOut(fabTorta);
+            ViewAnimation.showOut(fabPedido);
         }
     }
 
 
     public void cargarPedidos(){
         ArrayList<Pedido> lPedido = db.getPedidos();
-        pAdapter = new ListaPedidosAdapter(lPedido);
+        pAdapter = new ListaPedidosAdapter(lPedido, new ListaPedidosAdapter.Pdf() {
+            @Override
+            public void ondownload(String id, String f) {
+                abrirPdf(id, f);
+            }
+        });
         recyclerPedido.setLayoutManager(new LinearLayoutManager(getActivity()));
         // Attach the adapter to the recyclerview to populate items
         recyclerPedido.setAdapter(pAdapter);
@@ -165,13 +171,15 @@ public class FragmentPedidos extends Fragment {
         int id = (int) db.insertarPedido(nombre,observacion);
         for(int i = 0; i < articulos.size(); i++){
             int cant = Integer.parseInt(articulos.get(i).mostrarCantidad());
-            int stock = Integer.parseInt(articulos.get(i).mostrarStock());
-            db.insertarLineaPedido(id,Integer.parseInt(articulos.get(i).mostrarId()), cant, stock);
+            if(!articulos.get(i).isHeader() && cant >=1){
+                int stock = Integer.parseInt(articulos.get(i).mostrarStock());
+                db.insertarLineaPedido(id,Integer.parseInt(articulos.get(i).getId()), cant, stock);
+                pedidos.add(articulos.get(i));
+            }
         }
         cargarPedidos();
-        pedidos = articulos;
-
-        new GeneraPDF().execute();
+        String [] parametros = {nombre, String.valueOf(id), observacion};
+        new GeneraPDF().execute(parametros);
     }
 
     private boolean checkPermission() {
@@ -230,18 +238,17 @@ public class FragmentPedidos extends Fragment {
 
 
 
-    private class GeneraPDF extends AsyncTask<Void, Integer, Boolean> {
+    private class GeneraPDF extends AsyncTask<String, Integer, String> {
 
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
         String fecha = currentDate.format(todayDate);
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(String... params) {
 
-            Font largeBold = new Font(Font.FontFamily.COURIER, 32, Font.BOLD);
             Document document = new Document();
-            String fpath = Environment.getExternalStorageDirectory().getPath() + "/Pedidos-"+fecha+".pdf";
+            String fpath = Environment.getExternalStorageDirectory().getPath() + "/Pedido"+params[1]+"-"+sucursal+"-"+fecha+".pdf";
             File file = new File(fpath);
             try {
                 Drawable d = ContextCompat.getDrawable(getActivity(),R.drawable.logo_casapan);
@@ -255,6 +262,12 @@ public class FragmentPedidos extends Fragment {
                 PdfWriter.getInstance(document,new FileOutputStream(file));
                 document.open();
                 document.add(image);
+                Paragraph nombre =  new Paragraph(params[0]);
+                document.add(nombre);
+                Paragraph suc = new Paragraph("Sucursal: "+sucursal);
+                document.add(suc);
+                Paragraph obs = new Paragraph("Observacion: "+params[2]);
+                document.add(obs);
                 float[] columnWidths = new float[]{ 100f, 10f, 10f};
                 //---Encabezado--//
                 PdfPTable table = new PdfPTable(3);
@@ -273,7 +286,7 @@ public class FragmentPedidos extends Fragment {
                     PdfPTable tablelineapedido = new PdfPTable(3);
                     tablelineapedido.setWidthPercentage(100);
                     tablelineapedido.setWidths(columnWidths);
-                    PdfPCell producto= new PdfPCell(new Phrase(pedidos.get(i).mostrarNombre()));
+                    PdfPCell producto= new PdfPCell(new Phrase(pedidos.get(i).getNombre()));
                     producto.setBorder(Rectangle.NO_BORDER);
                     tablelineapedido.addCell(producto);
                     PdfPCell cantidad = new PdfPCell(new Phrase(pedidos.get(i).mostrarCantidad()));
@@ -296,7 +309,7 @@ public class FragmentPedidos extends Fragment {
             }
 
 
-            return true;
+            return params[0];
         }
 
 
@@ -308,14 +321,13 @@ public class FragmentPedidos extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(String result) {
             generarPdf.finishDialog();
-
             mySnackbar.setActionTextColor(getResources().getColor(R.color.white))
                     .setAction("Abrir", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pedidos-"+fecha+".pdf");
+                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pedido"+result+"-"+sucursal+"-"+fecha+".pdf");
                             Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider",file);
                             Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
                             pdfOpenintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -331,13 +343,17 @@ public class FragmentPedidos extends Fragment {
         }
     }
 
-    public class MyUndoListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-
-            // Code to undo the user's last action
-        }
-    }
+   public void abrirPdf(String id, String fecha){
+       File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pedido"+id+"-"+sucursal+"-"+fecha+".pdf");
+       Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider",file);
+       Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
+       pdfOpenintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+       pdfOpenintent.setDataAndType(uri, "application/pdf");
+       try {
+           startActivity(pdfOpenintent);
+       } catch (ActivityNotFoundException e) {
+           Toast.makeText(getContext(), "Archivo no encontrado", Toast.LENGTH_SHORT).show();
+       }
+   }
 
 }

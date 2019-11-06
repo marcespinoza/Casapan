@@ -24,7 +24,7 @@ import java.util.List;
 public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<ListItem> aList;
-    private ArrayList<ListItem> selArticulos = new ArrayList<>();
+    private ArrayList<ListaPedido> selArticulos = new ArrayList<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
@@ -49,7 +49,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(holder.getItemViewType()== TYPE_ITEM){
             ArticuloHolder articuloHolder = (ArticuloHolder) holder;
-            articuloHolder.descArticulo.setText(aList.get(position).mostrarNombre());
+            articuloHolder.descArticulo.setText(aList.get(position).getNombre());
             articuloHolder.cantidad.setText("0");
             articuloHolder.stock.setText("0");
             articuloHolder.cantidad.setShowSoftInputOnFocus(false);
@@ -66,8 +66,8 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void afterTextChanged(Editable e) {
-                    int index = getIndex(aList.get(position).mostrarId());
-                    selArticulos.get(index).setCantidad(e.toString());
+                    int index = getIndex(aList.get(position).getId());
+                    aList.get(position).setCantidad(e.toString());
                 }
             });
             articuloHolder.stock.setShowSoftInputOnFocus(false);
@@ -84,15 +84,13 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void afterTextChanged(Editable e) {
-                    int index = getIndex(aList.get(position).mostrarId());
-                    selArticulos.get(index).setStock(e.toString());
+                    int index = getIndex(aList.get(position).getId());
+                    aList.get(position).setStock(e.toString());
                 }
             });
             articuloHolder.agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(articuloHolder.check.isChecked()){
-
                 if(articuloHolder.cantidad.hasFocus()){
                     String cant = articuloHolder.cantidad.getText().toString();
                     int cantArt = Integer.valueOf(cant);
@@ -104,13 +102,11 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     cantArt++;
                     articuloHolder.stock.setText(String.valueOf(cantArt));
                 }
-                }
             }
         });
             articuloHolder.quitar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(articuloHolder.check.isChecked()){
                     if(articuloHolder.cantidad.hasFocus()){
                         String cant = articuloHolder.cantidad.getText().toString();
                         int cantArt = Integer.valueOf(cant);
@@ -125,41 +121,23 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         articuloHolder.stock.setText(String.valueOf(cantArt));
                     }
                 }
-            }
-        });
-            articuloHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                ListaPedido listaPedido = new ListaPedido();
-                if(b){
-                    articuloHolder.cantidad.setEnabled(true);
-                    articuloHolder.stock.setEnabled(true);
-                    listaPedido.setNombreArticulo(aList.get(position).mostrarNombre());
-                    listaPedido.setID(aList.get(position).mostrarId());
-                    selArticulos.add(listaPedido);
-                }else{
-                    remove(aList.get(position).mostrarId());
-                    articuloHolder.cantidad.setEnabled(false);
-                    articuloHolder.stock.setEnabled(false);
-                }
-            }
         });
         }else{
             PedidoAdapter.HeaderHolder headerHolder = (PedidoAdapter.HeaderHolder) holder;
-            headerHolder.nombreCategoria.setText(aList.get(position).mostrarNombre());
+            headerHolder.nombreCategoria.setText(aList.get(position).getNombre());
         }
     }
 
     public void remove(String id){
         for(int i = 0; i < selArticulos.size(); i++){
-            if(selArticulos.get(i).mostrarId().equals(id))
+            if(selArticulos.get(i).getId().equals(id))
                 selArticulos.remove(i);
         }
     }
 
     private int getIndex(String id){
         for(int i = 0; i < selArticulos.size(); i++){
-            if(selArticulos.get(i).mostrarId().equals(id))
+            if(selArticulos.get(i).getId().equals(id))
                 return i;
         }
         return 0;
@@ -171,7 +149,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public ArrayList<ListItem> getArticulos(){
-        return selArticulos;
+        return aList;
     }
 
     @Override
@@ -184,19 +162,10 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-
-    public List<ListItem> getSelectedItems() {
-
-        List<ListItem> selectedItems = new ArrayList<>();
-
-        return selectedItems;
-    }
-
     public class ArticuloHolder extends RecyclerView.ViewHolder {
         public TextView descArticulo;
         public ImageButton agregar, quitar;
         EditText cantidad, stock;
-        AppCompatCheckBox check;
 
         public ArticuloHolder(View view) {
             super(view);
@@ -205,7 +174,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             quitar = view.findViewById(R.id.quitar);
             cantidad = view.findViewById(R.id.cantidadart);
             stock =  view.findViewById(R.id.stock);
-            check = view.findViewById(R.id.check);
         }
     }
 

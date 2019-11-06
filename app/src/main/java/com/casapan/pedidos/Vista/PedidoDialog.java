@@ -88,6 +88,8 @@ public class PedidoDialog extends DialogFragment {
             Articulo articulo = new Articulo();
             articulo.setNombre(lArt.get(i).getNombre());
             articulo.setId(lArt.get(i).getId());
+            articulo.setCantidad("0");
+            articulo.setStock("0");
             aList.add(articulo);
         }
 

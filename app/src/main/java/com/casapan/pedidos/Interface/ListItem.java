@@ -2,14 +2,12 @@ package com.casapan.pedidos.Interface;
 
 public interface ListItem {
     boolean isHeader();
-    String mostrarNombre();
-    String mostrarId();
+    String getNombre();
+    String getId();
     String mostrarCantidad();
     String mostrarStock();
-    void setID(String id);
-    void setNombreArticulo(String nombre);
+    void setId(String id);
+    void setNombre(String nombre);
     void setCantidad(String cantidad);
     void setStock(String stock);
-    boolean getchecked();
-    void setchecked(boolean c);
 }

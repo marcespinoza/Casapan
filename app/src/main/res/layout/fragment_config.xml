@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp">
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -11,6 +17,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <EditText
+            android:id="@+id/sucursal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Sucursal"/>
@@ -18,3 +25,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/guardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        app:rippleColor="@color/blue_grey_600"
+        app:backgroundTint="@color/button_color_states"
+        app:cornerRadius="10dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:strokeColor="@color/blue_grey_600"
+        android:text="Guardar" />
+
+</RelativeLayout>

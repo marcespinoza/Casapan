@@ -21,12 +21,12 @@ public class ListaPedido implements ListItem {
     }
 
     @Override
-    public String mostrarNombre() {
+    public String getNombre() {
         return producto;
     }
 
     @Override
-    public String mostrarId() {
+    public String getId() {
         return idarticulo;
     }
 
@@ -41,12 +41,12 @@ public class ListaPedido implements ListItem {
     }
 
     @Override
-    public void setID(String id) {
+    public void setId(String id) {
         this.idarticulo = id ;
     }
 
     @Override
-    public void setNombreArticulo(String nombre) {
+    public void setNombre(String nombre) {
         this.producto=nombre;
     }
 
@@ -60,15 +60,6 @@ public class ListaPedido implements ListItem {
         this.stock = stock;
     }
 
-    @Override
-    public boolean getchecked() {
-        return checked;
-    }
-
-    @Override
-    public void setchecked(boolean checked) {
-        this.checked=checked;
-    }
 
 
 }
