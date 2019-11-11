@@ -24,18 +24,23 @@ public class HeaderCategoria implements ListItem {
     }
 
     @Override
-    public String mostrarCantidad() {
+    public String getCantidad() {
         return "0";
     }
 
     @Override
-    public String mostrarStock() {
+    public String getStock() {
+        return null;
+    }
+
+    @Override
+    public String getObservacion() {
         return null;
     }
 
     @Override
     public void setId(String id) {
-
+        this.id = id;
     }
 
     @Override
@@ -53,6 +58,10 @@ public class HeaderCategoria implements ListItem {
 
     }
 
+    @Override
+    public void setObservacion(String observacion) {
+
+    }
 
 
 }

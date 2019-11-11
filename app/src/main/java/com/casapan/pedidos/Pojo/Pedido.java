@@ -1,18 +1,65 @@
 package com.casapan.pedidos.Pojo;
 
-public class Pedido {
+import com.casapan.pedidos.Interface.ListItem;
+
+public class Pedido implements ListItem {
 
     String usuario;
     String fecha;
     String obs;
     String id;
 
+    @Override
+    public boolean isHeader() {
+        return false;
+    }
+
+    @Override
+    public String getNombre() {
+        return usuario;
+    }
+
     public String getId() {
         return id;
     }
 
+    @Override
+    public String getCantidad() {
+        return null;
+    }
+
+    @Override
+    public String getStock() {
+        return null;
+    }
+
+    @Override
+    public String getObservacion() {
+        return obs;
+    }
+
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public void setNombre(String nombre) {
+        this.usuario = nombre;
+    }
+
+    @Override
+    public void setCantidad(String cantidad) {
+
+    }
+
+    @Override
+    public void setStock(String stock) {
+
+    }
+
+    @Override
+    public void setObservacion(String obs) {
+        this.obs = obs;
     }
 
     public String getUsuario() {
@@ -29,13 +76,5 @@ public class Pedido {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
-    }
-
-    public String getObs() {
-        return obs;
-    }
-
-    public void setObs(String obs) {
-        this.obs = obs;
     }
 }

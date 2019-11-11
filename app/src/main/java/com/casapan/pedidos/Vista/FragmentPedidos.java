@@ -1,26 +1,19 @@
 package com.casapan.pedidos.Vista;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,46 +32,30 @@ import com.casapan.pedidos.Adapter.ListaPedidosAdapter;
 import com.casapan.pedidos.BuildConfig;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Database.DatabaseHelper;
+import com.casapan.pedidos.Interface.PedidoInterface;
 import com.casapan.pedidos.Pojo.Pedido;
+import com.casapan.pedidos.Presentador.PedidoPresentador;
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
+import com.casapan.pedidos.Util.SwipeControllerListaPedidos;
 import com.casapan.pedidos.Util.ViewAnimation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class FragmentPedidos extends Fragment {
+public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    @BindView(R.id.fab)  FloatingActionButton fab;
     private Boolean isFabOpen = false;
-    PedidoDialog aDialog;
+    PedidoDialog pDialog;
     TortaDialog tDialog;
     DatabaseHelper db;
     @BindView(R.id.fab_pedido) FloatingActionButton fabPedido;
@@ -90,17 +68,13 @@ public class FragmentPedidos extends Fragment {
     ProgressDialog generarPdf;
     ArrayList<ListItem> pedidos = new ArrayList<>();
     Snackbar mySnackbar;
-    String sucursal = "";
+    private PedidoInterface.Presentador presentador;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pedido, container, false);
         ButterKnife.bind(this, view);
-        generarPdf = new ProgressDialog(getContext());
-        mySnackbar = Snackbar.make(view, "Pdf generado", Snackbar.LENGTH_LONG);
-        sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
-        db = new DatabaseHelper(getActivity());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,23 +84,13 @@ public class FragmentPedidos extends Fragment {
         fabPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                aDialog = PedidoDialog.newInstance("");
-                aDialog.setInterface(new PedidoDialog.OnAceptarBoton() {
-                    @Override
-                    public void clickbutton(String usuario,ArrayList<ListItem> pedidos, String obs) {
-                        insertarPedidos(usuario, pedidos, obs);
-                    }
-                });
-                aDialog.show(fm, "Fragment pedido");
+                showDialogPedido("");
             }
         });
         fabTorta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                tDialog = TortaDialog.newInstance("");
-                tDialog.show(fm, "Fragment torta");
+                showDialogTorta();
             }
         });
         db = new DatabaseHelper(getActivity());
@@ -136,8 +100,42 @@ public class FragmentPedidos extends Fragment {
         }
         ViewAnimation.init(fabTorta);
         ViewAnimation.init(fabPedido);
+        init(view);
         cargarPedidos();
         return view;
+    }
+
+    public void showDialogPedido(String id){
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        pDialog = PedidoDialog.newInstance("");
+        pDialog.setInterface(new PedidoDialog.OnAceptarBoton() {
+            @Override
+            public void clickbutton(String id, String usuario, ArrayList<ListItem> pedidos, String obs) {
+                if(id.equals("")){
+                    insertarPedidos(usuario, pedidos, obs);
+                }else{
+                    db.updatePedido(id, usuario, obs, pedidos);
+                }
+            }
+        });
+        if(!id.equals("")){
+        Bundle bundle = new Bundle();
+        bundle.putString("id",id);
+        pDialog.setArguments(bundle);
+        }
+        pDialog.show(fm, "Fragment pedido");
+    }
+
+    public void showDialogTorta(){
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        tDialog = TortaDialog.newInstance("");
+        tDialog.OnAceptarButton(new TortaDialog.OnAceptarBoton() {
+            @Override
+            public void enviarpath(String path) {
+                abrirPdf(path);
+            }
+        });
+        tDialog.show(fm, "Fragment torta");
     }
 
 
@@ -152,34 +150,69 @@ public class FragmentPedidos extends Fragment {
         }
     }
 
+    void init(View v){
+        generarPdf = new ProgressDialog(getContext());
+        mySnackbar = Snackbar.make(v, "Pdf generado", Snackbar.LENGTH_LONG);
+        db = new DatabaseHelper(getActivity());
+        presentador = new PedidoPresentador(this);
+
+    }
+
 
     public void cargarPedidos(){
         ArrayList<Pedido> lPedido = db.getPedidos();
         pAdapter = new ListaPedidosAdapter(lPedido, new ListaPedidosAdapter.Pdf() {
             @Override
             public void ondownload(String id, String f) {
-                abrirPdf(id, f);
+                abrirPdf(id);
             }
         });
         recyclerPedido.setLayoutManager(new LinearLayoutManager(getActivity()));
         // Attach the adapter to the recyclerview to populate items
         recyclerPedido.setAdapter(pAdapter);
+        SwipeControllerListaPedidos swipeControllerListaPedidos = new SwipeControllerListaPedidos(getActivity()) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                ArrayList<Pedido>lPedidos = db.getPedidos();
+                String id = lPedidos.get(position).getId();
+                if(direction == ItemTouchHelper.LEFT)  {
+                   int response = db.borrarPedido(id);
+                    db.borrarLineaPedido(id);
+                    if(response!=-1)
+                        Toast.makeText(getActivity(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
+                    pAdapter.removeItem(position);
+                }
+                else if (direction == ItemTouchHelper.RIGHT) {
+                    pAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    showDialogPedido(id);
+                }
+            }
+        };
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeControllerListaPedidos);
+        itemTouchhelper.attachToRecyclerView(recyclerPedido);
     }
 
     public void insertarPedidos(String nombre, ArrayList<ListItem> articulos, String observacion){
-
         int id = (int) db.insertarPedido(nombre,observacion);
         for(int i = 0; i < articulos.size(); i++){
-            int cant = Integer.parseInt(articulos.get(i).mostrarCantidad());
+            int cant = Integer.parseInt(articulos.get(i).getCantidad());
             if(!articulos.get(i).isHeader() && cant >=1){
-                int stock = Integer.parseInt(articulos.get(i).mostrarStock());
+                int stock = Integer.parseInt(articulos.get(i).getStock());
                 db.insertarLineaPedido(id,Integer.parseInt(articulos.get(i).getId()), cant, stock);
                 pedidos.add(articulos.get(i));
             }
         }
         cargarPedidos();
         String [] parametros = {nombre, String.valueOf(id), observacion};
-        new GeneraPDF().execute(parametros);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+        generarPdf.showProgressDialog("Generando PDF");
+        presentador.generarPdf(parametros, pedidos);
     }
 
     private boolean checkPermission() {
@@ -225,8 +258,7 @@ public class FragmentPedidos extends Fragment {
 
         }
     }
-    private void showDialogNotCancelable(String title, String message,
-                                         DialogInterface.OnClickListener okListener) {
+    private void showDialogNotCancelable(String title, String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setMessage(message)
@@ -236,115 +268,22 @@ public class FragmentPedidos extends Fragment {
                 .show();
     }
 
+    @Override
+    public void mostrarPedidos() {
 
-
-    private class GeneraPDF extends AsyncTask<String, Integer, String> {
-
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
-        Date todayDate = new Date();
-        String fecha = currentDate.format(todayDate);
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            Document document = new Document();
-            String fpath = Environment.getExternalStorageDirectory().getPath() + "/Pedido"+params[1]+"-"+sucursal+"-"+fecha+".pdf";
-            File file = new File(fpath);
-            try {
-                Drawable d = ContextCompat.getDrawable(getActivity(),R.drawable.logo_casapan);
-                BitmapDrawable bitDw = ((BitmapDrawable) d);
-                Bitmap bmp = bitDw.getBitmap();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                Image image = Image.getInstance(stream.toByteArray());
-                image.scaleToFit(100,50);
-                image.setAlignment(Element.ALIGN_CENTER);
-                PdfWriter.getInstance(document,new FileOutputStream(file));
-                document.open();
-                document.add(image);
-                Paragraph nombre =  new Paragraph(params[0]);
-                document.add(nombre);
-                Paragraph suc = new Paragraph("Sucursal: "+sucursal);
-                document.add(suc);
-                Paragraph obs = new Paragraph("Observacion: "+params[2]);
-                document.add(obs);
-                float[] columnWidths = new float[]{ 100f, 10f, 10f};
-                //---Encabezado--//
-                PdfPTable table = new PdfPTable(3);
-                table.setSpacingBefore(20);
-                table.setWidthPercentage(100);
-                table.setWidths(columnWidths);
-                PdfPCell headerproducto= new PdfPCell(new Phrase("Producto"));
-                table.addCell(headerproducto);
-                PdfPCell headercantidad = new PdfPCell(new Phrase("Cant."));
-                table.addCell(headercantidad);
-                PdfPCell headerstock = new PdfPCell(new Phrase("Stock"));
-                table.addCell(headerstock);
-                document.add(table);
-
-                for(int i = 0; i < pedidos.size(); i++){
-                    PdfPTable tablelineapedido = new PdfPTable(3);
-                    tablelineapedido.setWidthPercentage(100);
-                    tablelineapedido.setWidths(columnWidths);
-                    PdfPCell producto= new PdfPCell(new Phrase(pedidos.get(i).getNombre()));
-                    producto.setBorder(Rectangle.NO_BORDER);
-                    tablelineapedido.addCell(producto);
-                    PdfPCell cantidad = new PdfPCell(new Phrase(pedidos.get(i).mostrarCantidad()));
-                    cantidad.setBorder(Rectangle.NO_BORDER);
-                    tablelineapedido.addCell(cantidad);
-                    PdfPCell stock = new PdfPCell(new Phrase(pedidos.get(i).mostrarStock()));
-                    stock.setBorder(Rectangle.NO_BORDER);
-                    tablelineapedido.addCell(stock);
-                    document.add(tablelineapedido);
-                }
-                document.close();
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return params[0];
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-            generarPdf.showProgressDialog("Generando PDF");
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            generarPdf.finishDialog();
-            mySnackbar.setActionTextColor(getResources().getColor(R.color.white))
-                    .setAction("Abrir", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pedido"+result+"-"+sucursal+"-"+fecha+".pdf");
-                            Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider",file);
-                            Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
-                            pdfOpenintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            pdfOpenintent.setDataAndType(uri, "application/pdf");
-                            try {
-                                startActivity(pdfOpenintent);
-                            } catch (ActivityNotFoundException e) {
-
-                            }
-                        }
-                    })
-                    .show();
-        }
     }
 
-   public void abrirPdf(String id, String fecha){
-       File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pedido"+id+"-"+sucursal+"-"+fecha+".pdf");
+    @Override
+    public void mostrarPdf(String id) {
+        generarPdf.finishDialog();
+        abrirPdf(id);
+    }
+
+
+
+
+    public void abrirPdf(String path){
+       File file = new File(Environment.getExternalStorageDirectory().getPath() + path);
        Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider",file);
        Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
        pdfOpenintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);

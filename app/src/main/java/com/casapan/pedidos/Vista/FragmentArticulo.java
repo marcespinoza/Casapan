@@ -28,7 +28,7 @@ import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Pojo.Articulo;
 import com.casapan.pedidos.Pojo.Categoria;
 import com.casapan.pedidos.R;
-import com.casapan.pedidos.Util.SwipeController;
+import com.casapan.pedidos.Util.SwipeControllerArticulos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,12 +98,12 @@ public class FragmentArticulo extends Fragment {
         Categoria categoria = (Categoria) spinnercategorias.getSelectedItem();
         if(spinnercategorias.getSelectedItemPosition()!=0){
         if(!nombreArt.getText().toString().isEmpty()){
-        boolean bol = dbh.insertarArticulo(nombreArt.getText().toString(), categoria.getId());
-        if(bol){
-            nombreArt.setText("");
-            cargarArticulos();
-        }
-        }else{
+           boolean bol = dbh.insertarArticulo(nombreArt.getText().toString(), categoria.getId());
+            if(bol){
+                nombreArt.setText("");
+                cargarArticulos();
+            }
+         }else{
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -155,12 +155,12 @@ public class FragmentArticulo extends Fragment {
         // Attach the adapter to the recyclerview to populate items
         recyclerArticulo.setAdapter(adapter);
         // Set layout manager to position the items
-        SwipeController swipeController = new SwipeController(getActivity()) {
+        SwipeControllerArticulos swipeControllerArticulos = new SwipeControllerArticulos(getActivity()) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 int viewType = viewHolder.getItemViewType();
-                String id = adapter.getId(position);
+                String id = list.get(position).getId();
                 String descripcion = adapter.getNombre(position);
                 if(direction == ItemTouchHelper.LEFT)  {
                     if(!lArt.get(position).isHeader()){
@@ -181,7 +181,7 @@ public class FragmentArticulo extends Fragment {
                         public void guardarEdicion(String nombre) {
                             final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                            if(lArt.get(position).isHeader()){
+                            if(list.get(position).isHeader()){
                                 dbh.updateCategoria(id, nombre);
                             }else{
                                 dbh.updateArticulo(id,nombre);
@@ -197,7 +197,7 @@ public class FragmentArticulo extends Fragment {
                 }
              }
         };
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeControllerArticulos);
         itemTouchhelper.attachToRecyclerView(recyclerArticulo);
     }
 

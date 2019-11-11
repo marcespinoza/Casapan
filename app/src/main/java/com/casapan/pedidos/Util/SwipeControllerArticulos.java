@@ -18,28 +18,29 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.casapan.pedidos.R;
 
 
-abstract public class SwipeController extends ItemTouchHelper.Callback {
+abstract public class SwipeControllerArticulos extends ItemTouchHelper.Callback {
 
     Context mContext;
     private Paint mClearPaint;
     private ColorDrawable mBackground;
     private int backgroundColor;
     private Drawable deleteDrawable;
-    private Drawable edittDrawable;
+    private Drawable editDrawable;
     private int intrinsicWidth;
     private int intrinsicHeight;
 
 
-    public SwipeController(Context context) {
+    public SwipeControllerArticulos(Context context) {
         mContext = context;
         mBackground = new ColorDrawable();
         backgroundColor = Color.parseColor("#b80f0a");
         mClearPaint = new Paint();
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         deleteDrawable = ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_delete);
-        edittDrawable = ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_edit);
+        editDrawable = ContextCompat.getDrawable(mContext, android.R.drawable.ic_menu_edit);
         intrinsicWidth = deleteDrawable.getIntrinsicWidth();
         intrinsicHeight = deleteDrawable.getIntrinsicHeight();
     }
@@ -71,6 +72,8 @@ abstract public class SwipeController extends ItemTouchHelper.Callback {
             return;
         }
 
+        if (dX < 0){
+
         mBackground.setColor(backgroundColor);
         mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         mBackground.draw(c);
@@ -82,8 +85,20 @@ abstract public class SwipeController extends ItemTouchHelper.Callback {
         int deleteIconBottom = deleteIconTop + intrinsicHeight;
         deleteDrawable.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom);
         deleteDrawable.draw(c);
+        }else if(dX > 0){
+            mBackground.setColor(ContextCompat.getColor(mContext, R.color.grey_200));
+            mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+            mBackground.draw(c);
 
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            int deleteIconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+            int deleteIconMargin = (itemHeight - intrinsicHeight) / 2;
+            int deleteIconLeft = itemView.getRight() - deleteIconMargin - intrinsicWidth;
+            int deleteIconRight = itemView.getRight() - deleteIconMargin;
+            int deleteIconBottom = deleteIconTop + intrinsicHeight;
+            editDrawable.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom);
+            editDrawable.draw(c);
+        }
+
     }
 
     private void clearCanvas(Canvas c, Float left, Float top, Float right, Float bottom) {

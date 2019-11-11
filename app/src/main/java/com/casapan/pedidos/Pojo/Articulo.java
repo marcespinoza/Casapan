@@ -43,13 +43,18 @@ public class Articulo implements ListItem {
     }
 
     @Override
-    public String mostrarCantidad() {
+    public String getCantidad() {
         return cantidad;
     }
 
     @Override
-    public String mostrarStock() {
+    public String getStock() {
         return stock;
+    }
+
+    @Override
+    public String getObservacion() {
+        return null;
     }
 
     @Override
@@ -70,6 +75,11 @@ public class Articulo implements ListItem {
     @Override
     public void setStock(String stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public void setObservacion(String observacion) {
+
     }
 
 }

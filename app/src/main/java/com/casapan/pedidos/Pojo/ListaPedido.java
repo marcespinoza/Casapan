@@ -12,7 +12,7 @@ public class ListaPedido implements ListItem {
     String stock = "0";
     String comentario;
     boolean checked;
-    String idarticulo;
+    String id;
 
 
     @Override
@@ -27,22 +27,27 @@ public class ListaPedido implements ListItem {
 
     @Override
     public String getId() {
-        return idarticulo;
+        return id;
     }
 
     @Override
-    public String mostrarCantidad() {
+    public String getCantidad() {
         return cantidad;
     }
 
     @Override
-    public String mostrarStock() {
+    public String getStock() {
         return stock;
     }
 
     @Override
+    public String getObservacion() {
+        return null;
+    }
+
+    @Override
     public void setId(String id) {
-        this.idarticulo = id ;
+        this.id = id ;
     }
 
     @Override
@@ -60,6 +65,10 @@ public class ListaPedido implements ListItem {
         this.stock = stock;
     }
 
+    @Override
+    public void setObservacion(String observacion) {
+
+    }
 
 
 }

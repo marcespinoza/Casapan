@@ -12,8 +12,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Pojo.Articulo;
 import com.casapan.pedidos.Pojo.Categoria;
+import com.casapan.pedidos.Pojo.ListaPedido;
 import com.casapan.pedidos.Pojo.Pedido;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -24,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ARTICULO = "articulo";
     private static final String TABLE_CATEGORIA = "categoria";
     private static final String TABLE_LINEA_PEDIDO = "linea_pedido";
+    private static final String TABLE_TORTA = "torta";
     private static final String TABLE_USER = "usuario";
     private static final String NOMBRE= "nombre";
     private static final String KEY_ID = "id";
@@ -41,10 +44,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TABLE_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ USUARIO + " TEXT,"+ FECHA + " TEXT ,"+ OBS + " TEXT );";
 
     private static final String CREATE_TABLE_LINEA_PEDIDO = "CREATE TABLE "
-            + TABLE_LINEA_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "id_pedido" + " INTEGER, "+ ID_ARTICULO + " TEXT,"+ "stock" +" INTEGER," + "cantidad" + " INTEGER );";
+            + TABLE_LINEA_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "id_pedido" + " INTEGER, "+ ID_ARTICULO + " INTEGER,"+ "stock" +" INTEGER," + "cantidad" + " INTEGER );";
 
     private static final String CREATE_TABLE_CATEGORIA = "CREATE TABLE "
             + TABLE_CATEGORIA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ NOMBRE + " TEXT );";
+
+    private static final String CREATE_TABLE_TORTA = "CREATE TABLE "
+            + TABLE_TORTA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "local" + " TEXT ,"+ "fecha" + " TEXT,"+ "cliente" + " TEXT,"+ "telefono" + " TEXT,"
+            + "fecha_entrega" + " TEXT,"+ "hora_entrega" + " TEXT,"+ "kilo" + " TEXT);";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME , null, 1);
@@ -57,6 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CATEGORIA);
         db.execSQL(CREATE_TABLE_PEDIDO);
         db.execSQL(CREATE_TABLE_LINEA_PEDIDO);
+        db.execSQL(CREATE_TABLE_TORTA);
     }
 
     @Override
@@ -67,6 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_LINEA_PEDIDO + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_ARTICULO + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_CATEGORIA + "'");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_TORTA + "'");
         onCreate(db);
     }
 
@@ -87,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public long insertarPedido (String usuario, String obs) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        String fecha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
         contentValues.put("usuario", usuario);
         contentValues.put("fecha", fecha);
@@ -141,12 +150,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean updatePedido(String id, String nombre, String obs, ArrayList<ListItem> pedidos){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(USUARIO, nombre);
+        contentValues.put(OBS, obs);
+        db.update("pedido", contentValues, "id = ? ", new String[] { id } );
+        for(int i = 0; i < pedidos.size(); i++){
+            ContentValues contentPedidos = new ContentValues();
+            String idpedido = pedidos.get(i).getId();
+            contentPedidos.put("cantidad", pedidos.get(i).getCantidad());
+            contentPedidos.put("stock", pedidos.get(i).getStock());
+            db.update("linea_pedido", contentPedidos, "id_pedido = ? and id = ?", new String[] { id, idpedido } );
+        }
+        return true;
+    }
+
     //-----------DELETE---------------//
 
     public Integer borrarArticulo (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("articulo",
                 "id = ? ",
+                new String[] { id});
+    }
+
+    public Integer borrarPedido (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("pedido",
+                "id = ? ",
+                new String[] { id});
+    }
+
+    public Integer borrarLineaPedido (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("linea_pedido",
+                "id_pedido = ? ",
                 new String[] { id});
     }
 
@@ -168,11 +207,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             pedido.setId(res.getString(0));
             pedido.setUsuario(res.getString(1));
             pedido.setFecha(res.getString(2));
-            pedido.setObs(res.getString(3));
+            pedido.setObservacion(res.getString(3));
             lPedidos.add(pedido);
             res.moveToNext();
         }
         return lPedidos;
+    }
+
+    public ArrayList<ListItem> getPedidosbyId(String id) {
+        ArrayList<ListItem> lPedidos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select p.id, p.usuario, p.observacion, a.nombre, lp.id, lp.cantidad, lp.stock from pedido p inner join linea_pedido lp on p.id=lp.id_pedido inner join articulo a on a.id=lp.id_articulo where p.id="+id+" ", null );
+        if(res.getCount()>0){
+        res.moveToFirst();
+        Pedido pedido = new Pedido();
+        pedido.setId(res.getString(0));
+        pedido.setNombre(res.getString(1));
+        pedido.setObservacion(res.getString(2));
+        lPedidos.add(pedido);
+        while(res.isAfterLast() == false){
+            ListaPedido lp =  new ListaPedido();
+            lp.setId(res.getString(4));
+            lp.setNombre(res.getString(3));
+            lp.setCantidad(res.getString(5));
+            lp.setStock(res.getString(6));
+            lPedidos.add(lp);
+            res.moveToNext();
+        }
+        }
+        return lPedidos;
+
+
     }
 
     public ArrayList<Articulo> getArticulosPorCategoria() {

@@ -43,7 +43,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             PedidoHolder pedidoHolder = (PedidoHolder) holder;
             pedidoHolder.fecha.setText(listPedidos.get(position).getFecha());
             pedidoHolder.usuario.setText(listPedidos.get(position).getUsuario());
-            pedidoHolder.observacion.setText(listPedidos.get(position).getObs());
+            pedidoHolder.observacion.setText(listPedidos.get(position).getObservacion());
             pedidoHolder.descargarpdf.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -57,6 +57,11 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         return listPedidos.size();
+    }
+
+    public void removeItem(int position) {
+        listPedidos.remove(position);
+        notifyItemRemoved(position);
     }
 
     public static class PedidoHolder extends RecyclerView.ViewHolder {

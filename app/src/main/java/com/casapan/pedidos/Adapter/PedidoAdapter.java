@@ -24,12 +24,13 @@ import java.util.List;
 public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<ListItem> aList;
-    private ArrayList<ListaPedido> selArticulos = new ArrayList<>();
+    private ArrayList<ListItem> editPedidos = null;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    public PedidoAdapter(ArrayList<ListItem> aList) {
+    public PedidoAdapter(ArrayList<ListItem> aList, ArrayList<ListItem> editPedidos) {
         this.aList = aList;
+        this.editPedidos = editPedidos;
     }
 
     @Override
@@ -50,8 +51,14 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(holder.getItemViewType()== TYPE_ITEM){
             ArticuloHolder articuloHolder = (ArticuloHolder) holder;
             articuloHolder.descArticulo.setText(aList.get(position).getNombre());
-            articuloHolder.cantidad.setText("0");
-            articuloHolder.stock.setText("0");
+            if(editPedidos!=null &&aList.get(position).getNombre().equalsIgnoreCase(editPedidos.get(position).getNombre())){
+                articuloHolder.cantidad.setText(editPedidos.get(position).getCantidad());
+                articuloHolder.stock.setText(editPedidos.get(position).getStock());
+                aList.get(position).setId(editPedidos.get(position).getId());
+            }else{
+                articuloHolder.cantidad.setText("0");
+                articuloHolder.stock.setText("0");
+            }
             articuloHolder.cantidad.setShowSoftInputOnFocus(false);
             articuloHolder.cantidad.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -66,7 +73,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void afterTextChanged(Editable e) {
-                    int index = getIndex(aList.get(position).getId());
                     aList.get(position).setCantidad(e.toString());
                 }
             });
@@ -84,7 +90,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void afterTextChanged(Editable e) {
-                    int index = getIndex(aList.get(position).getId());
                     aList.get(position).setStock(e.toString());
                 }
             });
@@ -128,20 +133,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void remove(String id){
-        for(int i = 0; i < selArticulos.size(); i++){
-            if(selArticulos.get(i).getId().equals(id))
-                selArticulos.remove(i);
-        }
-    }
 
-    private int getIndex(String id){
-        for(int i = 0; i < selArticulos.size(); i++){
-            if(selArticulos.get(i).getId().equals(id))
-                return i;
-        }
-        return 0;
-    }
 
     @Override
     public int getItemCount() {
