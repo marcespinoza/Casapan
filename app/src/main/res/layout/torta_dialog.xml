@@ -27,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:padding="6dp"
             android:weightSum="2">
 
             <EditText
@@ -49,6 +50,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="6dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -57,25 +59,31 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
                 android:hint="Fch. entrega" />
 
             <ImageButton
                 android:id="@+id/fechapicker"
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_calendar"/>
 
             <EditText
                 android:id="@+id/horaentrega"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
                 android:hint="Hora entrega"
                 android:inputType="phone" />
 
             <ImageButton
                 android:id="@+id/horapicker"
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_clock"/>
 
         </LinearLayout>
 
@@ -83,35 +91,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp">
+            android:layout_margin="6dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="7dp"
                 android:fontFamily="@font/robotobold"
                 android:text="Kilogramos" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/treskg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layoutDirection="rtl"
-                android:text="3" />
+            <RadioGroup
+                android:id="@+id/kilogramo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/cuatrokg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layoutDirection="rtl"
-                android:text="4" />
+                <RadioButton
+                    android:id="@+id/treskg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:checked="false"
+                    android:text="3" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/cincokg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layoutDirection="rtl"
-                android:text="5" />
+                <RadioButton
+                    android:id="@+id/cuatrokg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="4" />
+
+                <RadioButton
+                    android:id="@+id/cincokg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="5" />
+
+            </RadioGroup>
 
         </LinearLayout>
 
@@ -119,29 +139,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp">
+            android:layout_margin="6dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
                 android:fontFamily="@font/robotobold"
                 android:text="Bizcochuelo" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <RadioGroup
+                android:id="@+id/bizcochuelo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <RadioButton
                 android:id="@+id/bchocolate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layoutDirection="rtl"
                 android:text="Chocolate" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <RadioButton
                 android:id="@+id/bvainilla"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layoutDirection="rtl"
                 android:text="Vainilla" />
 
+            </RadioGroup>
 
         </LinearLayout>
 
@@ -168,89 +197,97 @@
                     android:layout_height="wrap_content"
                     android:text="Relleno 1" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioGroup
+                    android:id="@+id/rellenouno"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <RadioButton
                     android:id="@+id/ddeleche"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Dulce de leche" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/hojaldre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con hojaldre" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/chocolate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con chocolate" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/rocklet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con rocklet" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/durazno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con durazno" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/chantilly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema chantilly" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/americana"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema americana" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/moca"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema moca" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/bombon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema bombón" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/chantdurazno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Chantilly con durazno" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/chantillyanana"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Chantilly con ananá" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/mousefrutilla"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Mousse de frutilla" />
+
+                </RadioGroup>
 
             </LinearLayout>
 
@@ -266,77 +303,97 @@
                     android:layout_height="wrap_content"
                     android:text="Relleno 2" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioGroup
+                    android:id="@+id/rellenodos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/ddeleche2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Dulce de leche" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/hojaldre2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con hojaldre" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/chocolate2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con chocolate" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/rocklet2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con rocklet" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/durazno2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="D. leche con durazno" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/chantilly2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema chantilly" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/americana2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema americana" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/moca2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema moca" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/bombon2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Crema bombón" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/chantdurazno2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Chantilly con durazno" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/chantillyanana2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Chantilly con ananá" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
+                    android:id="@+id/mousefrutilla2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Mousse de frutilla" />
+
+                </RadioGroup>
 
             </LinearLayout>
 
@@ -365,49 +422,49 @@
                     android:layout_height="wrap_content"
                     android:text="DECORACION. CREMA CHANTILLY. COLORES (siempre tonos pasteles)" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/blanco"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Blanco" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/amarillo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Amarillo" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/rosado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Rosado" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/lila"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Lila" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/verde"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Verde" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/celeste"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Celeste" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/anaranjado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -428,28 +485,28 @@
                     android:layout_height="wrap_content"
                     android:text="EXTRAS" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/cereza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Cereza" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/mani"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Maní" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/chocolaterallado"
+                <RadioButton
+                    android:id="@+id/chipchocolate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
-                    android:text="Chocolate rallado" />
+                    android:text="Chip de chocolate" />
 
-                <androidx.appcompat.widget.AppCompatCheckBox
+                <RadioButton
                     android:id="@+id/baniochocolate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -466,34 +523,57 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
                 android:text="ESPACIO PARA ADORNO: "/>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <RadioGroup
+                android:id="@+id/adorno"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <RadioButton
                 android:id="@+id/adornosi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SI"/>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+
+            <RadioButton
                 android:id="@+id/adornono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="NO"/>
 
+            </RadioGroup>
+
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
         <EditText
+            android:id="@+id/tomopedido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TOMO EL PEDIDO"/>
+            android:hint="Tomó el pedido"/>
 
         <LinearLayout
             android:id="@+id/botones"

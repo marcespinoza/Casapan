@@ -17,6 +17,7 @@ import com.casapan.pedidos.Pojo.Articulo;
 import com.casapan.pedidos.Pojo.Categoria;
 import com.casapan.pedidos.Pojo.ListaPedido;
 import com.casapan.pedidos.Pojo.Pedido;
+import com.casapan.pedidos.Util.Constants;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -28,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_LINEA_PEDIDO = "linea_pedido";
     private static final String TABLE_TORTA = "torta";
     private static final String TABLE_USER = "usuario";
+    private static final String TABLE_EXTRA = "extra";
     private static final String NOMBRE= "nombre";
     private static final String KEY_ID = "id";
     private static final String ID_ARTICULO = "id_articulo";
@@ -50,8 +52,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TABLE_CATEGORIA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ NOMBRE + " TEXT );";
 
     private static final String CREATE_TABLE_TORTA = "CREATE TABLE "
-            + TABLE_TORTA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "local" + " TEXT ,"+ "fecha" + " TEXT,"+ "cliente" + " TEXT,"+ "telefono" + " TEXT,"
-            + "fecha_entrega" + " TEXT,"+ "hora_entrega" + " TEXT,"+ "kilo" + " TEXT);";
+            + TABLE_TORTA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "local" + " TEXT ,"+
+            "fecha" + " TEXT,"+
+            "cliente" + " TEXT,"+
+            "telefono" + " TEXT,"+
+            "fecha_entrega" + " TEXT,"+
+            "hora_entrega" + " TEXT,"+
+            "kilo" + " TEXT,"+
+            "textotorta" + " TEXT,"+
+            "adorno" + " TEXT,"+
+            "tomopedido" + " TEXT);";
+
+    private static final String CREATE_TABLE_EXTRA = "CREATE TABLE "
+            + TABLE_EXTRA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "blanco" + " INTEGER ,"+
+            "amarillo" + " INTEGER ,"+
+            "rosado" + " INTEGER ,"+
+            "lila" + " INTEGER ,"+
+            "verde" + " INTEGER ,"+
+            "celeste" + " INTEGER,"+
+            "anaranjado" + " INTEGER ,"+
+            "cereza" + " INTEGER ,"+
+            "mani" + " INTEGER ,"+
+            "chipchocolate" + " INTEGER ,"+
+            "baniochocolate" + " INTEGER );";
+
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME , null, 1);
@@ -65,6 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PEDIDO);
         db.execSQL(CREATE_TABLE_LINEA_PEDIDO);
         db.execSQL(CREATE_TABLE_TORTA);
+        db.execSQL(CREATE_TABLE_EXTRA);
     }
 
     @Override
@@ -76,10 +104,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_ARTICULO + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_CATEGORIA + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_TORTA + "'");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_EXTRA + "'");
         onCreate(db);
     }
 
     //----------INSERT-----------//
+
+    public boolean insertarExtra (String [] params) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+     /*   contentValues.put("blanco", nombre);
+        contentValues.put("amarillo", categoria);
+        contentValues.put("rosado", categoria);
+        contentValues.put("lila", categoria);
+        contentValues.put("verde", categoria);
+        contentValues.put("celeste", categoria);
+        contentValues.put("anaranjado", categoria);
+        contentValues.put("cereza", categoria);
+        contentValues.put("mani", categoria);
+        contentValues.put("chipchocolate", categoria);
+        contentValues.put("baniochocolate", categoria);*/
+        long id = db.insert("extra", null, contentValues);
+        if(id==-1){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     public boolean insertarArticulo (String nombre, String categoria) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -92,6 +143,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else{
             return true;
         }
+    }
+
+    public long insertarPedidoTorta (String suc, String [] params) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String fecha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("sucursal", suc);
+        contentValues.put("fecha", fecha);
+        contentValues.put("cliente", params[0]);
+        contentValues.put("telefono", params[1]);
+        contentValues.put("fecha_entrega", params[2]);
+        contentValues.put("hora_entrega", params[3]);
+        contentValues.put("kilo", params[4]);
+        contentValues.put("textotorta", params[5]);
+        contentValues.put("adorno", params[6]);
+        long id = db.insert("telefono", null, contentValues);
+        return id;
     }
 
     public long insertarPedido (String usuario, String obs) {

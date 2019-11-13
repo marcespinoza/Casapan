@@ -27,12 +27,17 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
     }
 
     @Override
+    public void armarPedidoTorta(String [] params) {
+        modelo.pedidoTorta(params);
+    }
+
+    @Override
     public void generarPdf(String[] params, ArrayList<ListItem> pedidos) {
         modelo.generarPdf(params, pedidos);
     }
 
     @Override
-    public void mostrarPdf(String id) {
-            vista.mostrarPdf(id);
+    public void mostrarPdf(String path) {
+            vista.mostrarPdf(path);
     }
 }

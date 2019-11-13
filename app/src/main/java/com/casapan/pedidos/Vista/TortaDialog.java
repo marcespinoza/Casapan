@@ -22,13 +22,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
@@ -82,43 +83,40 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.horaentrega) EditText horatexto;
     @BindView(R.id.fechapicker) ImageButton fechapick;
     @BindView(R.id.horapicker) ImageButton horapick;
-    @BindView(R.id.treskg) AppCompatCheckBox treskg;
-    @BindView(R.id.cuatrokg) AppCompatCheckBox cuatrokg;
-    @BindView(R.id.cincokg) AppCompatCheckBox cincokg;
-    @BindView(R.id.bchocolate) AppCompatCheckBox bchocolate;
-    @BindView(R.id.bvainilla) AppCompatCheckBox bvainilla;
-    @BindView(R.id.ddeleche)AppCompatCheckBox ddeleche;
-    @BindView(R.id.hojaldre) AppCompatCheckBox hojaldre;
-    @BindView(R.id.chocolate) AppCompatCheckBox chocolate;
-    @BindView(R.id.rocklet) AppCompatCheckBox rocklet;
-    @BindView(R.id.durazno)AppCompatCheckBox durazno;
-    @BindView(R.id.chantilly) AppCompatCheckBox chantilly;
-    @BindView(R.id.americana) AppCompatCheckBox ameriacana;
-    @BindView(R.id.moca) AppCompatCheckBox moca;
-    @BindView(R.id.bombon)AppCompatCheckBox bombon;
-    @BindView(R.id.chantdurazno) AppCompatCheckBox chantydurazno;
-    @BindView(R.id.chantillyanana) AppCompatCheckBox chantyanana;
-    @BindView(R.id.mousefrutilla) AppCompatCheckBox mousefrutilla;
-    @BindView(R.id.blanco) AppCompatCheckBox blanco;
-    @BindView(R.id.amarillo) AppCompatCheckBox amarillo;
-    @BindView(R.id.rosado) AppCompatCheckBox rosado;
-    @BindView(R.id.lila) AppCompatCheckBox lila;
-    @BindView(R.id.verde) AppCompatCheckBox verde;
-    @BindView(R.id.celeste) AppCompatCheckBox celeste;
-    @BindView(R.id.anaranjado) AppCompatCheckBox anaranjado;
-    @BindView(R.id.cereza) AppCompatCheckBox cereza;
-    @BindView(R.id.mani) AppCompatCheckBox mani;
-    @BindView(R.id.chocolaterallado) AppCompatCheckBox chocolaterallado;
-    @BindView(R.id.baniochocolate) AppCompatCheckBox baniochocolate;
+    @BindView(R.id.kilogramo) RadioGroup kilogramo;
+    @BindView(R.id.bizcochuelo) RadioGroup bizcochuelo_radio;
+    @BindView(R.id.rellenouno) RadioGroup relleno_uno;
+    @BindView(R.id.rellenodos)RadioGroup relleno_dos;
+    @BindView(R.id.treskg) RadioButton treskg;
+    @BindView(R.id.cuatrokg) RadioButton cuatrokg;
+    @BindView(R.id.cincokg) RadioButton cincokg;
+    @BindView(R.id.bchocolate) RadioButton bchocolate;
+    @BindView(R.id.bvainilla) RadioButton bvainilla;
+    //----Colores-----------//
+    @BindView(R.id.blanco) RadioButton rblanco;
+    @BindView(R.id.amarillo) RadioButton ramarillo;
+    @BindView(R.id.rosado) RadioButton rrosado;
+    @BindView(R.id.lila) RadioButton rlila;
+    @BindView(R.id.verde) RadioButton rverde;
+    @BindView(R.id.celeste) RadioButton rceleste;
+    @BindView(R.id.anaranjado) RadioButton ranaranjado;
+    //-----Extras-------//
+    @BindView(R.id.cereza) RadioButton rcereza;
+    @BindView(R.id.mani) RadioButton rmani;
+    @BindView(R.id.chipchocolate) RadioButton rchipchocolate;
+    @BindView(R.id.baniochocolate) RadioButton rbaniochocolate;
+    //---Fin extras------//
     @BindView(R.id.textotorta) EditText textotorta;
-    @BindView(R.id.adornosi) AppCompatCheckBox adornosi;
-    @BindView(R.id.adornono) AppCompatCheckBox adornono;
-    String sucursal = "";
+    @BindView(R.id.adorno) RadioGroup adornoRadio;
+    @BindView(R.id.adornosi) RadioButton adornosi;
+    @BindView(R.id.adornono) RadioButton adornono;
+    @BindView(R.id.tomopedido) EditText tomopedido;
+    String  sucursal, kg, bizcochuelo, relleno1, relleno2,  adorno, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
     ProgressDialog generarPdf;
     public OnAceptarBoton onAceptarBoton;
 
     public interface OnAceptarBoton{
-        void enviarpath(String usuario);
+        void enviarpath(String [] params);
     }
 
     public void OnAceptarButton(OnAceptarBoton onAceptarBoton){
@@ -148,8 +146,7 @@ public class TortaDialog extends DialogFragment {
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String [] params = {cliente.getText().toString(), telefono.getText().toString(), fechatexto.getText().toString(), horatexto.getText().toString()};
-                new GeneraPedidoTorta().execute(params);
+               enviarPedido();
             }
         });
         cancelar = rootView.findViewById(R.id.cancelartorta);
@@ -159,121 +156,108 @@ public class TortaDialog extends DialogFragment {
                 dismiss();
             }
         });
+        initChecked();
         return rootView;
     }
 
-    public static TortaDialog newInstance(String Pedido) {
+    public void initChecked(){
+        kilogramo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                switch (selectedId){
+                    case R.id.treskg:{ kg = "3";break;}
+                    case R.id.cuatrokg:{kg = "4";break;}
+                    case R.id.cincokg:{kg = "5";break;}
+                }
+            }
+        });
+        bizcochuelo_radio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                switch (selectedId){
+                    case R.id.bchocolate:{ bizcochuelo = "chocolate";break;}
+                    case R.id.bvainilla:{bizcochuelo = "vainilla";break;}
+                }
+            }
+        });
+        relleno_uno.setOnCheckedChangeListener((radioGroup, i) -> {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            switch (selectedId){
+                case R.id.ddeleche:{ relleno1 = "Dulce de leche";break;}
+                case R.id.hojaldre:{relleno1 = "D. leche con hojaldre";break;}
+                case R.id.chocolate:{relleno1 = "D. leche con chocolate";break;}
+                case R.id.rocklet:{relleno1 = "D. leche con rocklet";break;}
+                case R.id.durazno:{relleno1 = "D. leche con durazno";break;}
+                case R.id.chantilly:{relleno1 = "Crema chantilly";break;}
+                case R.id.americana:{relleno1 = "Crema americana";break;}
+                case R.id.moca:{relleno1 = "Crema moca";break;}
+                case R.id.bombon:{relleno1 = "Crema bombón";}
+                case R.id.chantdurazno:{relleno1 = "Chantilly con durazno";break;}
+                case R.id.chantillyanana:{relleno1 = "Chantilly con ananá";break;}
+                case R.id.mousefrutilla:{relleno1 = "Mousse de frutilla";break;}
+                default: relleno1 = "Sin relleno";break;
+            }
+        });
+        relleno_dos.setOnCheckedChangeListener((radioGroup, i) -> {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            switch (selectedId){
+                case R.id.ddeleche2:{ relleno2 = "Dulce de leche";break;}
+                case R.id.hojaldre2:{relleno2 = "D. leche con hojaldre";break;}
+                case R.id.chocolate2:{relleno2 = "D. leche con chocolate";break;}
+                case R.id.rocklet2:{relleno2 = "D. leche con rocklet";break;}
+                case R.id.durazno2:{relleno2 = "D. leche con durazno";break;}
+                case R.id.chantilly2:{relleno2 = "Crema chantilly";break;}
+                case R.id.americana2:{relleno2 = "Crema americana";break;}
+                case R.id.moca2:{relleno2 = "Crema moca";break;}
+                case R.id.bombon2:{relleno2 = "Crema bombón";break;}
+                case R.id.chantdurazno2:{relleno2 = "Chantilly con durazno";break;}
+                case R.id.chantillyanana2:{relleno2 = "Chantilly con ananá";break;}
+                case R.id.mousefrutilla2:{relleno2 = "Mousse de frutilla";break;}
+                default: relleno2 = "Sin relleno";break;
+            }
+        });
+        adornoRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                switch (selectedId){
+                    case R.id.adornono:{ adorno = "No";}
+                    case R.id.adornosi:{adorno = "Si";}
+                    default: adorno = "No";
+                }
+            }
+        });
+    }
+
+    public void enviarPedido(){
+        String client = cliente.getText().toString();
+        String tel = telefono.getText().toString();
+        String fch =  fechatexto.getText().toString();
+        String hora = horatexto.getText().toString();
+        String texto_torta = textotorta.getText().toString();
+        String tomo_pedido = tomopedido.getText().toString();
+        blanco = rblanco.isChecked()? "- Blanco -": "";
+        amarillo = ramarillo.isChecked()? "- Amarillo -": "";
+        rosado = rrosado.isChecked()? "- Rosado -": "";
+        lila = rlila.isChecked()? "- Lila -": "";
+        verde = rverde.isChecked()? "- Verde -": "";
+        celeste = rceleste.isChecked()? "- Celeste -": "";
+        anaranjado = ranaranjado.isChecked()? "- Anaranjado -": "";
+        cereza = rcereza.isChecked()? "- Cereza -": "";
+        mani = rmani.isChecked()? "- Mani -": "";
+        chipchocolate = rchipchocolate.isChecked()? "- Chip de chocolate -": "";
+        baniochocolate = rbaniochocolate.isChecked()? "- Baño chocolate cara superior -": "";
+        String [] params = {client, tel, fch, hora, texto_torta, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
+        onAceptarBoton.enviarpath(params);
+        dismiss();
+    }
+
+    public static TortaDialog newInstance() {
         TortaDialog frag = new TortaDialog();
         return frag;
     }
-
-         class GeneraPedidoTorta extends AsyncTask<String, Integer, String> {
-
-            SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
-            Date todayDate = new Date();
-            String fecha = currentDate.format(todayDate);
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                Document document = new Document();
-                String path = "/PedidoTorta"+"-"+sucursal+"-"+fecha+".pdf";
-                String fpath = Environment.getExternalStorageDirectory().getPath() + path;
-                File file = new File(fpath);
-                try {
-                    Drawable d = ContextCompat.getDrawable(getActivity(),R.drawable.logo_casapan);
-                    BitmapDrawable bitDw = ((BitmapDrawable) d);
-                    Bitmap bmp = bitDw.getBitmap();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    Image image = Image.getInstance(stream.toByteArray());
-                    image.scaleToFit(100,50);
-                    image.setAlignment(Element.ALIGN_CENTER);
-                    PdfWriter.getInstance(document,new FileOutputStream(file));
-                    document.open();
-                    document.add(image);
-                    Paragraph titulo = new Paragraph("ARMÁ TU TORTA");
-                    titulo.setAlignment(Element.ALIGN_CENTER);
-                    titulo.setSpacingAfter(20);
-                    titulo.setSpacingBefore(20);
-                    document.add(titulo);
-                    float[] columnEncabezado = new float[]{60f, 60f};
-                    //------Local y fecha-----------///
-                    PdfPTable localfecha= new PdfPTable(2);
-                    localfecha.setWidthPercentage(100);
-                    localfecha.setWidths(columnEncabezado);
-                    PdfPCell localentrega= new PdfPCell(new Phrase("LOCAL DE ENTREGA"));
-                    localentrega.setBorder(Rectangle.NO_BORDER);
-                    localfecha.addCell(localentrega);
-                    PdfPCell fechapedido = new PdfPCell(new Phrase("FECHA PEDIDO: "+ fecha));
-                    fechapedido.setBorder(Rectangle.NO_BORDER);
-                    localfecha.addCell(fechapedido);
-                    document.add(localfecha);
-                    //--------Cliente y telefono-----//
-                    PdfPTable clientetelefono= new PdfPTable(2);
-                    clientetelefono.setWidthPercentage(100);
-                    clientetelefono.setWidths(columnEncabezado);
-                    PdfPCell cliente= new PdfPCell(new Phrase("CLIENTE: "+params[0]));
-                    cliente.setBorder(Rectangle.NO_BORDER);
-                    clientetelefono.addCell(cliente);
-                    PdfPCell telefono = new PdfPCell(new Phrase("TELEFONO: "+ params[1]));
-                    telefono.setBorder(Rectangle.NO_BORDER);
-                    clientetelefono.addCell(telefono);
-                    document.add(clientetelefono);
-                    //--------fecha y hora--------//
-                    PdfPTable fechahora= new PdfPTable(2);
-                    fechahora.setWidthPercentage(100);
-                    fechahora.setWidths(columnEncabezado);
-                    PdfPCell fecha= new PdfPCell(new Phrase("FECHA DE ENTREGA: "+params[2]));
-                    fecha.setBorder(Rectangle.NO_BORDER);
-                    fechahora.addCell(fecha);
-                    PdfPCell hora = new PdfPCell(new Phrase("HORA DE ENTREGA: "+ params[3]));
-                    hora.setBorder(Rectangle.NO_BORDER);
-                    fechahora.addCell(hora);
-                    document.add(fechahora);
-                    float[] columnWidths = new float[]{ 100f, 10f, 10f};
-                    //---Encabezado--//
-                    PdfPTable table = new PdfPTable(3);
-                    table.setSpacingBefore(20);
-                    table.setWidthPercentage(100);
-                    table.setWidths(columnWidths);
-                    PdfPCell headerproducto= new PdfPCell(new Phrase("Producto"));
-                    table.addCell(headerproducto);
-                    PdfPCell headercantidad = new PdfPCell(new Phrase("Cant."));
-                    table.addCell(headercantidad);
-                    PdfPCell headerstock = new PdfPCell(new Phrase("Stock"));
-                    table.addCell(headerstock);
-                    document.add(table);
-
-                    document.close();
-                } catch (DocumentException e) {
-                    e.printStackTrace();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return path;
-            }
-
-
-            @Override
-            protected void onPreExecute() {
-                final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                generarPdf.showProgressDialog("Generando PDF");
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                generarPdf.finishDialog();
-                dismiss();
-                onAceptarBoton.enviarpath(result);
-            }
-        }
-
 
     private void showDatePickerDialog() {
         DatePickerDialog recogerFecha = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {

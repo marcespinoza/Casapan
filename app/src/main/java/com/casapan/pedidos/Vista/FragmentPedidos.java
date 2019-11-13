@@ -128,11 +128,12 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
 
     public void showDialogTorta(){
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        tDialog = TortaDialog.newInstance("");
+        tDialog = TortaDialog.newInstance();
         tDialog.OnAceptarButton(new TortaDialog.OnAceptarBoton() {
             @Override
-            public void enviarpath(String path) {
-                abrirPdf(path);
+            public void enviarpath(String [] params) {
+                generarPdf.showProgressDialog("Generando PDF");
+                presentador.armarPedidoTorta(params);
             }
         });
         tDialog.show(fm, "Fragment torta");
@@ -274,12 +275,15 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     }
 
     @Override
-    public void mostrarPdf(String id) {
+    public void mostrarPdf(String path) {
         generarPdf.finishDialog();
-        abrirPdf(id);
+        mySnackbar.setAction("Abrir PDF", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abrirPdf(path);
+            }
+        }).show();
     }
-
-
 
 
     public void abrirPdf(String path){

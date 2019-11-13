@@ -9,14 +9,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.casapan.pedidos.App.GlobalApplication;
 import com.casapan.pedidos.BuildConfig;
+import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Interface.PedidoInterface;
 import com.casapan.pedidos.R;
@@ -48,11 +46,13 @@ public class PedidoModelo implements PedidoInterface.Modelo {
     Context context;
     String sucursal = "";
     String fecha = "";
+    DatabaseHelper db;
 
     public PedidoModelo(PedidoInterface.Presentador presentador) {
         this.presentador = presentador;
         context = GlobalApplication.getAppContext();
         sucursal = Constants.getSPreferences(context).getNombreSucursal();
+        db = new DatabaseHelper(context);
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
         fecha = currentDate.format(todayDate);
@@ -61,6 +61,16 @@ public class PedidoModelo implements PedidoInterface.Modelo {
     @Override
     public void getPedidos() {
 
+    }
+
+    @Override
+    public void pedidoTorta(String [] params) {
+        guardarTorta(params);
+        new GeneraPedidoTorta().execute(params);
+    }
+
+    public void guardarTorta(String [] params){
+        db.insertarPedidoTorta(sucursal, params);
     }
 
     @Override
@@ -140,8 +150,6 @@ public class PedidoModelo implements PedidoInterface.Modelo {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
             return params[1];
         }
 
@@ -155,6 +163,122 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         protected void onPostExecute(String result) {
            String path = "/Pedido"+result+"-"+sucursal+"-"+fecha+".pdf";
            presentador.mostrarPdf(path);
+        }
+    }
+
+    class GeneraPedidoTorta extends AsyncTask<String, Integer, String> {
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+        Date todayDate = new Date();
+        String fecha = currentDate.format(todayDate);
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            Document document = new Document();
+            String path = "/PedidoTorta"+"-"+sucursal+"-"+fecha+".pdf";
+            String fpath = Environment.getExternalStorageDirectory().getPath() + path;
+            File file = new File(fpath);
+            try {
+                Drawable d = ContextCompat.getDrawable(context, R.drawable.logo_casapan);
+                BitmapDrawable bitDw = ((BitmapDrawable) d);
+                Bitmap bmp = bitDw.getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                Image image = Image.getInstance(stream.toByteArray());
+                image.scaleToFit(100,50);
+                image.setAlignment(Element.ALIGN_CENTER);
+                PdfWriter.getInstance(document,new FileOutputStream(file));
+                document.open();
+                document.add(image);
+                Paragraph titulo = new Paragraph("ARMÁ TU TORTA");
+                titulo.setAlignment(Element.ALIGN_CENTER);
+                titulo.setSpacingAfter(20);
+                titulo.setSpacingBefore(20);
+                document.add(titulo);
+                float[] columnEncabezado = new float[]{60f, 60f};
+                //------Local y fecha-----------///
+                PdfPTable localfecha= new PdfPTable(2);
+                localfecha.setWidthPercentage(100);
+                localfecha.setWidths(columnEncabezado);
+                PdfPCell localentrega= new PdfPCell(new Phrase("LOCAL DE ENTREGA: "+sucursal));
+                localentrega.setBorder(Rectangle.NO_BORDER);
+                localfecha.addCell(localentrega);
+                PdfPCell fechapedido = new PdfPCell(new Phrase("FECHA PEDIDO: "+ fecha));
+                fechapedido.setBorder(Rectangle.NO_BORDER);
+                localfecha.addCell(fechapedido);
+                document.add(localfecha);
+                //--------Cliente y telefono-----//
+                PdfPTable clientetelefono= new PdfPTable(2);
+                clientetelefono.setWidthPercentage(100);
+                clientetelefono.setWidths(columnEncabezado);
+                PdfPCell cliente= new PdfPCell(new Phrase("CLIENTE: "+params[0]));
+                cliente.setBorder(Rectangle.NO_BORDER);
+                clientetelefono.addCell(cliente);
+                PdfPCell telefono = new PdfPCell(new Phrase("TELEFONO: "+ params[1]));
+                telefono.setBorder(Rectangle.NO_BORDER);
+                clientetelefono.addCell(telefono);
+                document.add(clientetelefono);
+                //--------fecha y hora--------//
+                PdfPTable fechahora= new PdfPTable(2);
+                fechahora.setWidthPercentage(100);
+                fechahora.setWidths(columnEncabezado);
+                PdfPCell fecha= new PdfPCell(new Phrase("FECHA DE ENTREGA: "+params[2]));
+                fecha.setBorder(Rectangle.NO_BORDER);
+                fechahora.addCell(fecha);
+                PdfPCell hora = new PdfPCell(new Phrase("HORA DE ENTREGA: "+ params[3]));
+                hora.setBorder(Rectangle.NO_BORDER);
+                fechahora.addCell(hora);
+                document.add(fechahora);
+                Paragraph kilogramos = new Paragraph("Kilogramos: "+params[6]);
+                kilogramos.setSpacingBefore(20);
+                document.add(kilogramos);
+                Paragraph bizcoch = new Paragraph("Bizcochuelo: "+ params[7]);
+                document.add(bizcoch);
+                float[] columnWidths = new float[]{ 61f, 61f};
+                //---Encabezado--//
+                PdfPTable rellenos = new PdfPTable(2);
+                rellenos.setWidthPercentage(100);
+                rellenos.setWidths(columnWidths);
+                rellenos.setSpacingBefore(5);
+                PdfPCell rellenoUno= new PdfPCell(new Phrase("Relleno 1: "+params[8]));
+                rellenoUno.setBorder(Rectangle.NO_BORDER);
+                rellenos.addCell(rellenoUno);
+                PdfPCell rellenoDos = new PdfPCell(new Phrase("Relleno 2: "+params[9]));
+                rellenoDos.setBorder(Rectangle.NO_BORDER);
+                rellenos.addCell(rellenoDos);
+                document.add(rellenos);
+                Paragraph colores = new Paragraph("Colores: "+params[10]+params[11]+params[12]+params[13]+params[14]+params[15]+params[16]);
+                document.add(colores);
+                Paragraph extras = new Paragraph("Extras: "+params[17]+params[18]+params[19]+params[20]);
+                document.add(extras);
+                Paragraph textoTorta = new Paragraph("Texto: "+params[21]);
+                document.add(textoTorta);
+                Paragraph espacio_adorno = new Paragraph("Espacio para adorno: "+ params[22]);
+                document.add(espacio_adorno);
+                Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[23]);
+                document.add(tomoPedido);
+                document.close();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return path;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            presentador.mostrarPdf(result);
         }
     }
     
