@@ -43,26 +43,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " INTEGER PRIMARY KEY AUTOINCREMENT," + DESCRIPCION_ARTICULO + " TEXT," +  KEY_CATEGORIA + " INTEGER);";
 
     private static final String CREATE_TABLE_PEDIDO = "CREATE TABLE "
-            + TABLE_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ USUARIO + " TEXT,"+ FECHA + " TEXT ,"+ OBS + " TEXT );";
+            + TABLE_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "torta" + " INTEGER DEFAULT 0,"+
+            USUARIO + " TEXT,"+
+            FECHA + " TEXT ,"+
+            OBS + " TEXT ,"+
+            "local" + " TEXT ,"+
+            "cliente" + " TEXT,"+
+            "telefono" + " TEXT,"+
+            "fecha_entrega" + " TEXT,"+
+            "hora_entrega" + " TEXT,"+
+            "kilo" + " TEXT,"+
+            "bizcochuelo" + " TEXT,"+
+            "relleno1" + " TEXT,"+
+            "relleno2" + " TEXT,"+
+            "textotorta" + " TEXT,"+
+            "adorno" + " TEXT);";
 
     private static final String CREATE_TABLE_LINEA_PEDIDO = "CREATE TABLE "
             + TABLE_LINEA_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "id_pedido" + " INTEGER, "+ ID_ARTICULO + " INTEGER,"+ "stock" +" INTEGER," + "cantidad" + " INTEGER );";
 
     private static final String CREATE_TABLE_CATEGORIA = "CREATE TABLE "
             + TABLE_CATEGORIA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ NOMBRE + " TEXT );";
-
-    private static final String CREATE_TABLE_TORTA = "CREATE TABLE "
-            + TABLE_TORTA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
-            "local" + " TEXT ,"+
-            "fecha" + " TEXT,"+
-            "cliente" + " TEXT,"+
-            "telefono" + " TEXT,"+
-            "fecha_entrega" + " TEXT,"+
-            "hora_entrega" + " TEXT,"+
-            "kilo" + " TEXT,"+
-            "textotorta" + " TEXT,"+
-            "adorno" + " TEXT,"+
-            "tomopedido" + " TEXT);";
 
     private static final String CREATE_TABLE_EXTRA = "CREATE TABLE "
             + TABLE_EXTRA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -91,7 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CATEGORIA);
         db.execSQL(CREATE_TABLE_PEDIDO);
         db.execSQL(CREATE_TABLE_LINEA_PEDIDO);
-        db.execSQL(CREATE_TABLE_TORTA);
         db.execSQL(CREATE_TABLE_EXTRA);
     }
 
@@ -103,34 +104,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_LINEA_PEDIDO + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_ARTICULO + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_CATEGORIA + "'");
-        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_TORTA + "'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_EXTRA + "'");
         onCreate(db);
     }
 
     //----------INSERT-----------//
-
-    public boolean insertarExtra (String [] params) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-     /*   contentValues.put("blanco", nombre);
-        contentValues.put("amarillo", categoria);
-        contentValues.put("rosado", categoria);
-        contentValues.put("lila", categoria);
-        contentValues.put("verde", categoria);
-        contentValues.put("celeste", categoria);
-        contentValues.put("anaranjado", categoria);
-        contentValues.put("cereza", categoria);
-        contentValues.put("mani", categoria);
-        contentValues.put("chipchocolate", categoria);
-        contentValues.put("baniochocolate", categoria);*/
-        long id = db.insert("extra", null, contentValues);
-        if(id==-1){
-            return false;
-        }else{
-            return true;
-        }
-    }
 
     public boolean insertarArticulo (String nombre, String categoria) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -149,16 +127,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String fecha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
-        contentValues.put("sucursal", suc);
+        contentValues.put("torta", 1);
+        contentValues.put("local", suc);
         contentValues.put("fecha", fecha);
         contentValues.put("cliente", params[0]);
         contentValues.put("telefono", params[1]);
         contentValues.put("fecha_entrega", params[2]);
         contentValues.put("hora_entrega", params[3]);
         contentValues.put("kilo", params[4]);
-        contentValues.put("textotorta", params[5]);
-        contentValues.put("adorno", params[6]);
-        long id = db.insert("telefono", null, contentValues);
+        contentValues.put("bizcochuelo", params[5]);
+        contentValues.put("relleno1", params[6]);
+        contentValues.put("relleno2", params[7]);
+        contentValues.put("textotorta", params[19]);
+        contentValues.put("adorno", params[20]);
+        contentValues.put("usuario", params[21]);
+        long id = db.insert("pedido", null, contentValues);
+        return id;
+    }
+
+    public long insertarExtra (String [] params) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String fecha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("blanco", params[8]);
+        contentValues.put("amarillo", params[9]);
+        contentValues.put("rosado", params[10]);
+        contentValues.put("lila", params[11]);
+        contentValues.put("verde", params[12]);
+        contentValues.put("celeste", params[13]);
+        contentValues.put("anaranjado", params[14]);
+        contentValues.put("cereza", params[15]);
+        contentValues.put("mani", params[16]);
+        contentValues.put("chipchocolate", params[17]);
+        contentValues.put("baniochocolate", params[18]);
+        long id = db.insert("extra", null, contentValues);
         return id;
     }
 
@@ -195,8 +197,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert("categoria", null, contentValues);
         return true;
     }
-
-
 
     //--------UPDATE----------//
 
@@ -268,14 +268,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Pedido> getPedidos() {
         ArrayList<Pedido> lPedidos = new ArrayList<Pedido>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from pedido order by date(fecha) desc", null );
+        Cursor res =  db.rawQuery( "select p.id, p.torta, p.usuario, strftime('%d-%m-%Y', p.fecha), p.observacion from pedido p order by date(fecha) desc", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
             Pedido pedido = new Pedido();
             pedido.setId(res.getString(0));
-            pedido.setUsuario(res.getString(1));
-            pedido.setFecha(res.getString(2));
-            pedido.setObservacion(res.getString(3));
+            pedido.setTorta(res.getInt(1));
+            pedido.setUsuario(res.getString(2));
+            pedido.setFecha(res.getString(3));
+            pedido.setObservacion(res.getString(4));
             lPedidos.add(pedido);
             res.moveToNext();
         }

@@ -165,7 +165,7 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         pAdapter = new ListaPedidosAdapter(lPedido, new ListaPedidosAdapter.Pdf() {
             @Override
             public void ondownload(String id, String f) {
-                abrirPdf(id);
+                abrirPdf(f);
             }
         });
         recyclerPedido.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -277,6 +277,7 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     @Override
     public void mostrarPdf(String path) {
         generarPdf.finishDialog();
+        cargarPedidos();
         mySnackbar.setAction("Abrir PDF", new View.OnClickListener() {
             @Override
             public void onClick(View view) {

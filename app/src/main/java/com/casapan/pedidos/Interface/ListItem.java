@@ -7,9 +7,11 @@ public interface ListItem {
     String getCantidad();
     String getStock();
     String getObservacion();
+    int getTorta();
     void setId(String id);
     void setNombre(String nombre);
     void setCantidad(String cantidad);
     void setStock(String stock);
+    void setTorta(int torta);
     void setObservacion(String observacion);
 }

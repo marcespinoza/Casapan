@@ -58,6 +58,11 @@ public class Articulo implements ListItem {
     }
 
     @Override
+    public int getTorta() {
+        return 0;
+    }
+
+    @Override
     public void setId(String id) {
         this.id = id;
     }
@@ -75,6 +80,11 @@ public class Articulo implements ListItem {
     @Override
     public void setStock(String stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public void setTorta(int torta) {
+
     }
 
     @Override

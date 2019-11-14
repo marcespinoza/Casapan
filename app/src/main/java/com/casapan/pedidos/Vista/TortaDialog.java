@@ -249,7 +249,7 @@ public class TortaDialog extends DialogFragment {
         mani = rmani.isChecked()? "- Mani -": "";
         chipchocolate = rchipchocolate.isChecked()? "- Chip de chocolate -": "";
         baniochocolate = rbaniochocolate.isChecked()? "- Baño chocolate cara superior -": "";
-        String [] params = {client, tel, fch, hora, texto_torta, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
+        String [] params = {client, tel, fch, hora, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
         onAceptarBoton.enviarpath(params);
         dismiss();
     }

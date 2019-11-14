@@ -8,6 +8,7 @@ public class Pedido implements ListItem {
     String fecha;
     String obs;
     String id;
+    int torta;
 
     @Override
     public boolean isHeader() {
@@ -38,6 +39,11 @@ public class Pedido implements ListItem {
         return obs;
     }
 
+    @Override
+    public int getTorta() {
+        return torta;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -55,6 +61,11 @@ public class Pedido implements ListItem {
     @Override
     public void setStock(String stock) {
 
+    }
+
+    @Override
+    public void setTorta(int torta) {
+        this.torta = torta;
     }
 
     @Override

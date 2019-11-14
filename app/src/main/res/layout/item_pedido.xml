@@ -43,6 +43,15 @@
 
 </LinearLayout>
 
+      <ImageView
+          android:id="@+id/torta"
+          android:layout_width="25dp"
+          android:layout_height="25dp"
+          android:visibility="invisible"
+          android:layout_centerVertical="true"
+          android:layout_toLeftOf="@id/descargarpdf"
+          android:src="@drawable/ic_cake"/>
+
    <ImageButton
        android:id="@+id/descargarpdf"
        android:layout_width="40dp"
