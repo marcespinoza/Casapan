@@ -143,7 +143,7 @@ public class PedidoDialog extends DialogFragment {
         int height = getActivity().getResources().getDisplayMetrics().heightPixels;
         Window window = getDialog().getWindow();
 
-        window.setLayout(width-100, height-700
+        window.setLayout(width-50, height-200
         );
         window.setGravity(Gravity.CENTER);
     }

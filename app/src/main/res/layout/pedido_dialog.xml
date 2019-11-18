@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nombreusuario"
@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="Usuario"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/usuario"
@@ -20,79 +22,91 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/recycler_linea_pedido">
+        app:layout_constraintStart_toStartOf="@+id/nombreusuario"
+        app:layout_constraintStart_toEndOf="@+id/nombreusuario"
+        app:layout_constraintTop_toBottomOf="@+id/nombreusuario">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/stock"
             android:layout_marginRight="3dp"
-            android:textSize="12sp"
-            android:text="Cant."/>
+            android:layout_toLeftOf="@+id/stock"
+            android:text="Cant."
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
             android:text="Stock"
-            android:textSize="12sp"
-            android:layout_marginRight="110dp"/>
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_linea_pedido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@+id/nombreusuario"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relativeLayout"
+        app:layout_constraintBottom_toTopOf="@id/observacion"/>
 
     <EditText
         android:id="@+id/observacion"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/botones"
-        android:layout_marginBottom="5dp"
-        android:hint="Observacion"/>
+        android:hint="Observacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/botones" />
 
     <LinearLayout
         android:id="@+id/botones"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/aceptarpedido"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:layout_marginRight="5dp"
-            app:rippleColor="@color/grey_200"
+            android:text="Aceptar"
+            android:textColor="@color/white"
             app:backgroundTint="@color/blue_A400"
             app:cornerRadius="10dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:strokeColor="@color/blue_A400"
-            android:text="Aceptar" />
+            app:rippleColor="@color/grey_200"
+            app:strokeColor="@color/blue_A400" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelarpedido"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:text="Cancelar"
             android:textColor="@color/white"
-            app:rippleColor="@color/grey_200"
             app:backgroundTint="@color/red_300"
             app:cornerRadius="10dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:strokeColor="@color/red_300"
-            android:text="Cancelar" />
+            app:rippleColor="@color/grey_200"
+            app:strokeColor="@color/red_300" />
 
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

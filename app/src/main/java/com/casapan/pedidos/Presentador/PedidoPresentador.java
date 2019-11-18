@@ -40,4 +40,14 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
     public void mostrarPdf(String path) {
             vista.mostrarPdf(path);
     }
+
+    @Override
+    public void actualizarPedidoTorta(String id) {
+        modelo.obtenerPedidoTorta(id);
+    }
+
+    @Override
+    public void enviarPedidoTorta(ArrayList<String> ptorta) {
+        vista.mostrarPedidoTorta(ptorta);
+    }
 }

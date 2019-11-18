@@ -30,33 +30,12 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -92,6 +71,32 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.cincokg) RadioButton cincokg;
     @BindView(R.id.bchocolate) RadioButton bchocolate;
     @BindView(R.id.bvainilla) RadioButton bvainilla;
+    //----Relleno1------//
+    @BindView(R.id.ddeleche) RadioButton rdleche;
+    @BindView(R.id.hojaldre) RadioButton rdlechehojaldre;
+    @BindView(R.id.chocolate) RadioButton rdlechechocolate;
+    @BindView(R.id.rocklet) RadioButton rdlecherocklet;
+    @BindView(R.id.durazno) RadioButton rdlechedurazno;
+    @BindView(R.id.chantilly) RadioButton cchantilly;
+    @BindView(R.id.americana) RadioButton camericana;
+    @BindView(R.id.moca) RadioButton cmoca;
+    @BindView(R.id.bombon) RadioButton cbombon;
+    @BindView(R.id.chantdurazno) RadioButton chantillydurazno;
+    @BindView(R.id.chantillyanana) RadioButton chantillyanana;
+    @BindView(R.id.mousefrutilla) RadioButton mousse;
+    //----Relleno2------//
+    @BindView(R.id.ddeleche2) RadioButton rdleche2;
+    @BindView(R.id.hojaldre2) RadioButton rdlechehojaldre2;
+    @BindView(R.id.chocolate2) RadioButton rdlechechocolate2;
+    @BindView(R.id.rocklet2) RadioButton rdlecherocklet2;
+    @BindView(R.id.durazno2) RadioButton rdlechedurazno2;
+    @BindView(R.id.chantilly2) RadioButton cchantilly2;
+    @BindView(R.id.americana2) RadioButton camericana2;
+    @BindView(R.id.moca2) RadioButton cmoca2;
+    @BindView(R.id.bombon2) RadioButton cbombon2;
+    @BindView(R.id.chantdurazno2) RadioButton chantillydurazno2;
+    @BindView(R.id.chantillyanana2) RadioButton chantillyanana2;
+    @BindView(R.id.mousefrutilla2) RadioButton mousse2;
     //----Colores-----------//
     @BindView(R.id.blanco) RadioButton rblanco;
     @BindView(R.id.amarillo) RadioButton ramarillo;
@@ -113,6 +118,7 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.tomopedido) EditText tomopedido;
     String  sucursal, kg, bizcochuelo, relleno1, relleno2,  adorno, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
     ProgressDialog generarPdf;
+    ArrayList<String> ptorta;
     public OnAceptarBoton onAceptarBoton;
 
     public interface OnAceptarBoton{
@@ -128,6 +134,7 @@ public class TortaDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.torta_dialog,container);
         ButterKnife.bind(this, rootView);
+
         sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
         generarPdf = new ProgressDialog(getContext());
         fechapick.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +164,10 @@ public class TortaDialog extends DialogFragment {
             }
         });
         initChecked();
+        if(getArguments()!=null){
+           ptorta = getArguments().getStringArrayList("pedidotorta");
+           cargarPedido(ptorta);
+        }
         return rootView;
     }
 
@@ -229,6 +240,51 @@ public class TortaDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    public void cargarPedido(ArrayList<String> ptorta){
+        cliente.setText(ptorta.get(0));
+        telefono.setText(ptorta.get(1));
+        fechatexto.setText(ptorta.get(2));
+        horatexto.setText(ptorta.get(3));
+        String kg = ptorta.get(4);
+        switch (kg){
+           case "3": treskg.setChecked(true); break;
+           case "4": cuatrokg.setChecked(true); break;
+           case "5": cincokg.setChecked(true); break;
+        }
+        switch (bizcochuelo){
+            case "chocolate": bchocolate.setChecked(true); break;
+            case "vainilla": bvainilla.setChecked(true); break;
+        }
+        switch (relleno1){
+            case "Dulce de leche": rdleche.setChecked(true);
+            case "D. leche con hojaldre": rdlechehojaldre.setChecked(true);
+            case "D. leche con chocolate": rdlechechocolate.setChecked(true);
+            case "D. leche con rocklet": rdlecherocklet.setChecked(true);
+            case "D. leche con durazno": rdlechedurazno.setChecked(true);
+            case "Crema chantilly": cchantilly.setChecked(true);
+            case "Crema americana": camericana.setChecked(true);
+            case "Crema moca": cmoca.setChecked(true);
+            case "Crema bombon": cbombon.setChecked(true);
+            case "Chantilly con durazno": chantillydurazno.setChecked(true);
+            case "Chantilly con anana": chantillyanana.setChecked(true);
+            case "Mousse de frutilla": mousse.setChecked(true);
+        }
+        switch (relleno2){
+            case "Dulce de leche": rdleche2.setChecked(true);
+            case "D. leche con hojaldre": rdlechehojaldre2.setChecked(true);
+            case "D. leche con chocolate": rdlechechocolate2.setChecked(true);
+            case "D. leche con rocklet": rdlecherocklet2.setChecked(true);
+            case "D. leche con durazno": rdlechedurazno2.setChecked(true);
+            case "Crema chantilly": cchantilly2.setChecked(true);
+            case "Crema americana": camericana2.setChecked(true);
+            case "Crema moca": cmoca2.setChecked(true);
+            case "Crema bombon": cbombon2.setChecked(true);
+            case "Chantilly con durazno": chantillydurazno2.setChecked(true);
+            case "Chantilly con anana": chantillyanana2.setChecked(true);
+            case "Mousse de frutilla": mousse2.setChecked(true);
+        }
     }
 
     public void enviarPedido(){

@@ -64,22 +64,28 @@ public class PedidoModelo implements PedidoInterface.Modelo {
     }
 
     @Override
+    public void obtenerPedidoTorta(String id) {
+        ArrayList<String> ptorta = db.getPedidoTortabyId(id);
+        presentador.enviarPedidoTorta(ptorta);
+    }
+
+    @Override
     public void pedidoTorta(String [] params) {
         guardarTorta(params);
-        new GeneraPedidoTorta().execute(params);
     }
 
     public void guardarTorta(String [] params){
-        db.insertarPedidoTorta(sucursal, params);
+       long id = db.insertarPedidoTorta(sucursal, params);
+       new GeneraPedidoTorta(id).execute(params);
     }
 
     @Override
     public void generarPdf(String [] params, ArrayList<ListItem> pedidos) {
         Object [] objects = {params, pedidos};
-        new GeneraPDF().execute(objects);
+        new GeneraPedido().execute(objects);
     }
 
-    private class GeneraPDF extends AsyncTask<Object, Integer, String> {
+    private class GeneraPedido extends AsyncTask<Object, Integer, String> {
 
         @Override
         protected String doInBackground(Object... parameters) {
@@ -104,6 +110,8 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 Paragraph fch = new Paragraph(fecha);
                 fch.setAlignment(Element.ALIGN_RIGHT);
                 document.add(fch);
+                Paragraph idpedido = new Paragraph("Nro. Pedido: "+params[1]);
+                document.add(idpedido);
                 Paragraph nombre =  new Paragraph(params[0]);
                 document.add(nombre);
                 Paragraph suc = new Paragraph("Sucursal: "+sucursal);
@@ -171,12 +179,17 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
         String fecha = currentDate.format(todayDate);
+        long id = 0;
+
+        public GeneraPedidoTorta(long id) {
+            this.id = id;
+        }
 
         @Override
         protected String doInBackground(String... params) {
 
             Document document = new Document();
-            String path = "/PedidoTorta"+"-"+sucursal+"-"+fecha+".pdf";
+            String path = "/PedidoTorta"+id+"-"+sucursal+"-"+fecha+".pdf";
             String fpath = Environment.getExternalStorageDirectory().getPath() + path;
             File file = new File(fpath);
             try {
@@ -196,15 +209,17 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 titulo.setSpacingAfter(20);
                 titulo.setSpacingBefore(20);
                 document.add(titulo);
+                Paragraph idpedido = new Paragraph("Nro. Pedido: "+id);
+                document.add(idpedido);
+                //------Local y fecha-----------//
                 float[] columnEncabezado = new float[]{60f, 60f};
-                //------Local y fecha-----------///
                 PdfPTable localfecha= new PdfPTable(2);
                 localfecha.setWidthPercentage(100);
                 localfecha.setWidths(columnEncabezado);
-                PdfPCell localentrega= new PdfPCell(new Phrase("LOCAL DE ENTREGA: "+sucursal));
+                PdfPCell localentrega= new PdfPCell(new Phrase("Local de entrega: "+sucursal));
                 localentrega.setBorder(Rectangle.NO_BORDER);
                 localfecha.addCell(localentrega);
-                PdfPCell fechapedido = new PdfPCell(new Phrase("FECHA PEDIDO: "+ fecha));
+                PdfPCell fechapedido = new PdfPCell(new Phrase("Fecha pedido: "+ fecha));
                 fechapedido.setBorder(Rectangle.NO_BORDER);
                 localfecha.addCell(fechapedido);
                 document.add(localfecha);
@@ -212,10 +227,10 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 PdfPTable clientetelefono= new PdfPTable(2);
                 clientetelefono.setWidthPercentage(100);
                 clientetelefono.setWidths(columnEncabezado);
-                PdfPCell cliente= new PdfPCell(new Phrase("CLIENTE: "+params[0]));
+                PdfPCell cliente= new PdfPCell(new Phrase("Cliente: "+params[0]));
                 cliente.setBorder(Rectangle.NO_BORDER);
                 clientetelefono.addCell(cliente);
-                PdfPCell telefono = new PdfPCell(new Phrase("TELEFONO: "+ params[1]));
+                PdfPCell telefono = new PdfPCell(new Phrase("Telefono: "+ params[1]));
                 telefono.setBorder(Rectangle.NO_BORDER);
                 clientetelefono.addCell(telefono);
                 document.add(clientetelefono);
@@ -223,17 +238,17 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 PdfPTable fechahora= new PdfPTable(2);
                 fechahora.setWidthPercentage(100);
                 fechahora.setWidths(columnEncabezado);
-                PdfPCell fecha= new PdfPCell(new Phrase("FECHA DE ENTREGA: "+params[2]));
+                PdfPCell fecha= new PdfPCell(new Phrase("Fecha de entrega: "+params[2]));
                 fecha.setBorder(Rectangle.NO_BORDER);
                 fechahora.addCell(fecha);
-                PdfPCell hora = new PdfPCell(new Phrase("HORA DE ENTREGA: "+ params[3]));
+                PdfPCell hora = new PdfPCell(new Phrase("Hora de entrega: "+ params[3]));
                 hora.setBorder(Rectangle.NO_BORDER);
                 fechahora.addCell(hora);
                 document.add(fechahora);
-                Paragraph kilogramos = new Paragraph("Kilogramos: "+params[6]);
+                Paragraph kilogramos = new Paragraph("Kilogramos: "+params[4]);
                 kilogramos.setSpacingBefore(20);
                 document.add(kilogramos);
-                Paragraph bizcoch = new Paragraph("Bizcochuelo: "+ params[7]);
+                Paragraph bizcoch = new Paragraph("Bizcochuelo: "+ params[5]);
                 document.add(bizcoch);
                 float[] columnWidths = new float[]{ 61f, 61f};
                 //---Encabezado--//

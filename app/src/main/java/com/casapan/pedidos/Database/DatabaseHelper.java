@@ -67,7 +67,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TABLE_CATEGORIA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ NOMBRE + " TEXT );";
 
     private static final String CREATE_TABLE_EXTRA = "CREATE TABLE "
-            + TABLE_EXTRA + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            + TABLE_EXTRA +
+            "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "id_pedido"+ " INTEGER ,"+
             "blanco" + " INTEGER ,"+
             "amarillo" + " INTEGER ,"+
             "rosado" + " INTEGER ,"+
@@ -141,14 +143,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("textotorta", params[19]);
         contentValues.put("adorno", params[20]);
         contentValues.put("usuario", params[21]);
+        contentValues.put("observacion", "Cliente: "+params[0]);
         long id = db.insert("pedido", null, contentValues);
+        insertarExtra(params, id);
         return id;
     }
 
-    public long insertarExtra (String [] params) {
+    public long insertarExtra (String [] params, long idPedido) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String fecha = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
+        contentValues.put("id_pedido", idPedido);
         contentValues.put("blanco", params[8]);
         contentValues.put("amarillo", params[9]);
         contentValues.put("rosado", params[10]);
@@ -305,8 +309,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         }
         return lPedidos;
+    }
 
+    public ArrayList<String> getPedidoTortabyId(String id){
+        ArrayList<String>ptorta = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select p.local, p.cliente, p.telefono, p.fecha_entrega, " +
+                                    "p.hora_entrega, p.kilo, p.bizcochuelo, p.relleno1, p.relleno2, " +
+                                    "p.textotorta, p.adorno, e.blanco, e.amarillo, e.rosado," +
+                "e.lila, e.verde, e.celeste, e.anaranjado, e.cerezas, e.mani, e.chipchocolate, e.baniochocolate from pedido p inner join extra e on p.id=e.id_pedido" , null );
 
+        if(res.moveToFirst()){
+            for(int i = 0; i <=21; i++){
+             ptorta.add(res.getString(i));
+            }
+        }return ptorta;
     }
 
     public ArrayList<Articulo> getArticulosPorCategoria() {

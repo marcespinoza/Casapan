@@ -1,7 +1,6 @@
 package com.casapan.pedidos.Vista;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,7 +34,6 @@ import com.casapan.pedidos.Interface.PedidoInterface;
 import com.casapan.pedidos.Pojo.Pedido;
 import com.casapan.pedidos.Presentador.PedidoPresentador;
 import com.casapan.pedidos.R;
-import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
 import com.casapan.pedidos.Util.SwipeControllerListaPedidos;
 import com.casapan.pedidos.Util.ViewAnimation;
@@ -60,7 +57,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     DatabaseHelper db;
     @BindView(R.id.fab_pedido) FloatingActionButton fabPedido;
     @BindView(R.id.fab_armatutorta) FloatingActionButton fabTorta;
-    private boolean fabExpanded = false;
     String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final int MULTIPLE_PERMISSIONS = 10;
     ListaPedidosAdapter pAdapter;
@@ -78,19 +74,21 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                animateFAB(view);
+                animateFAB();
             }
         });
         fabPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialogPedido("");
+                animateFAB();
             }
         });
         fabTorta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialogTorta();
+                showDialogTorta(null);
+                animateFAB();
             }
         });
         db = new DatabaseHelper(getActivity());
@@ -98,10 +96,10 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         if(currentApiVersion >=  Build.VERSION_CODES.M)        {
                 checkPermission();
         }
-        ViewAnimation.init(fabTorta);
-        ViewAnimation.init(fabPedido);
         init(view);
         cargarPedidos();
+        ViewAnimation.init(fabPedido);
+        ViewAnimation.init(fabTorta);
         return view;
     }
 
@@ -119,16 +117,18 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
             }
         });
         if(!id.equals("")){
-        Bundle bundle = new Bundle();
-        bundle.putString("id",id);
-        pDialog.setArguments(bundle);
+          Bundle bundle = new Bundle();
+          bundle.putString("id",id);
+          pDialog.setArguments(bundle);
         }
         pDialog.show(fm, "Fragment pedido");
     }
 
-    public void showDialogTorta(){
+    public void showDialogTorta(@Nullable ArrayList<String> ptorta){
         FragmentManager fm = getActivity().getSupportFragmentManager();
         tDialog = TortaDialog.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("pedidotorta", ptorta);
         tDialog.OnAceptarButton(new TortaDialog.OnAceptarBoton() {
             @Override
             public void enviarpath(String [] params) {
@@ -140,8 +140,8 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     }
 
 
-    public void animateFAB(View v){
-        isFabOpen = ViewAnimation.rotateFab(v, !isFabOpen);
+    public void animateFAB(){
+        isFabOpen = ViewAnimation.rotateFab(fab, !isFabOpen);
         if(isFabOpen){
             ViewAnimation.showIn(fabPedido);
             ViewAnimation.showIn(fabTorta);
@@ -156,7 +156,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         mySnackbar = Snackbar.make(v, "Pdf generado", Snackbar.LENGTH_LONG);
         db = new DatabaseHelper(getActivity());
         presentador = new PedidoPresentador(this);
-
     }
 
 
@@ -177,6 +176,7 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                 final int position = viewHolder.getAdapterPosition();
                 ArrayList<Pedido>lPedidos = db.getPedidos();
                 String id = lPedidos.get(position).getId();
+                int idtorta = lPedidos.get(position).getTorta();
                 if(direction == ItemTouchHelper.LEFT)  {
                    int response = db.borrarPedido(id);
                     db.borrarLineaPedido(id);
@@ -186,7 +186,15 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                 }
                 else if (direction == ItemTouchHelper.RIGHT) {
                     pAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    showDialogPedido(id);
+                    //-----Verifico si es pedido comun o de torta---//
+                    if(idtorta==0){
+                        showDialogPedido(id);
+                    }else{
+                        String idTorta = lPedidos.get(position).getId();
+                        presentador.actualizarPedidoTorta(id);
+                    }
+
+
                 }
             }
         };
@@ -206,12 +214,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         }
         cargarPedidos();
         String [] parametros = {nombre, String.valueOf(id), observacion};
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
         generarPdf.showProgressDialog("Generando PDF");
         presentador.generarPdf(parametros, pedidos);
     }
@@ -231,7 +233,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         }
         return true;
     }
-
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
             switch (requestCode) {
@@ -259,6 +260,7 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
 
         }
     }
+
     private void showDialogNotCancelable(String title, String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(getActivity())
                 .setTitle(title)
@@ -284,6 +286,11 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                 abrirPdf(path);
             }
         }).show();
+    }
+
+    @Override
+    public void mostrarPedidoTorta(ArrayList<String> ptorta) {
+        showDialogTorta(ptorta);
     }
 
 
