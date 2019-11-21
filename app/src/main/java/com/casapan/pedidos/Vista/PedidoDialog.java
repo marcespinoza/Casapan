@@ -71,7 +71,7 @@ public class PedidoDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 ArrayList<ListItem> art = artAdapter.getArticulos();
-                onAceptarBoton.clickbutton(id, usuario.getText().toString(),art,obser.getText().toString());
+                onAceptarBoton.clickbutton(id, usuario.getText().toString(), art, obser.getText().toString());
                 dismiss();
             }
         });
@@ -142,9 +142,7 @@ public class PedidoDialog extends DialogFragment {
         int width = getActivity().getResources().getDisplayMetrics().widthPixels;
         int height = getActivity().getResources().getDisplayMetrics().heightPixels;
         Window window = getDialog().getWindow();
-
-        window.setLayout(width-50, height-200
-        );
+        window.setLayout(width-50, height-200);
         window.setGravity(Gravity.CENTER);
     }
 

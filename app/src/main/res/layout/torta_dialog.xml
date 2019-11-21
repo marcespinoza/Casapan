@@ -113,7 +113,6 @@
                     android:id="@+id/treskg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
                     android:checked="false"
                     android:text="3" />
 
@@ -516,7 +515,7 @@
                 <EditText
                     android:id="@+id/textotorta"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:hint="TEXTO" />
 
             </LinearLayout>

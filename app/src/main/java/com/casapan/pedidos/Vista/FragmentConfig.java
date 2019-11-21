@@ -1,10 +1,12 @@
 package com.casapan.pedidos.Vista;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class FragmentConfig extends Fragment implements ConfigInterface.Vista {
             @Override
             public void onClick(View view) {
                 guardarSucursal();
+                hideKeyboard();
             }
         });
         initUi();
@@ -49,6 +52,11 @@ public class FragmentConfig extends Fragment implements ConfigInterface.Vista {
         String suc = Constants.getSPreferences(getContext()).getNombreSucursal();
         sucursal.setText(suc);
         getActivity().getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    public void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
     private void guardarSucursal() {

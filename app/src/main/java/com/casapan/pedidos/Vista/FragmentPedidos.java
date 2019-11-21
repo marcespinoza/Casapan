@@ -62,7 +62,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     ListaPedidosAdapter pAdapter;
     @BindView(R.id.recycler_pedidos) RecyclerView recyclerPedido;
     ProgressDialog generarPdf;
-    ArrayList<ListItem> pedidos = new ArrayList<>();
     Snackbar mySnackbar;
     private PedidoInterface.Presentador presentador;
 
@@ -109,10 +108,11 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         pDialog.setInterface(new PedidoDialog.OnAceptarBoton() {
             @Override
             public void clickbutton(String id, String usuario, ArrayList<ListItem> pedidos, String obs) {
+                generarPdf.showProgressDialog("Generando PDF");
                 if(id.equals("")){
-                    insertarPedidos(usuario, pedidos, obs);
+                    presentador.armarPedido(usuario, pedidos, obs);
                 }else{
-                    db.updatePedido(id, usuario, obs, pedidos);
+                    presentador.actualizarPedido(id, usuario, pedidos, obs);
                 }
             }
         });
@@ -127,13 +127,16 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     public void showDialogTorta(@Nullable ArrayList<String> ptorta){
         FragmentManager fm = getActivity().getSupportFragmentManager();
         tDialog = TortaDialog.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("pedidotorta", ptorta);
+        if(ptorta!=null){
+         Bundle bundle = new Bundle();
+         bundle.putStringArrayList("pedidotorta", ptorta);
+         tDialog.setArguments(bundle);
+        }
         tDialog.OnAceptarButton(new TortaDialog.OnAceptarBoton() {
             @Override
-            public void enviarpath(String [] params) {
+            public void enviarpath(String idpedido, String[] params) {
                 generarPdf.showProgressDialog("Generando PDF");
-                presentador.armarPedidoTorta(params);
+                presentador.armarPedidoTorta(idpedido, params);
             }
         });
         tDialog.show(fm, "Fragment torta");
@@ -179,7 +182,11 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                 int idtorta = lPedidos.get(position).getTorta();
                 if(direction == ItemTouchHelper.LEFT)  {
                    int response = db.borrarPedido(id);
-                    db.borrarLineaPedido(id);
+                   if(idtorta==0){
+                       db.borrarLineasPorPedido(id);
+                   }else{
+                       db.borrarExtra(id);
+                   }
                     if(response!=-1)
                         Toast.makeText(getActivity(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
                     pAdapter.removeItem(position);
@@ -190,7 +197,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                     if(idtorta==0){
                         showDialogPedido(id);
                     }else{
-                        String idTorta = lPedidos.get(position).getId();
                         presentador.actualizarPedidoTorta(id);
                     }
 
@@ -202,21 +208,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         itemTouchhelper.attachToRecyclerView(recyclerPedido);
     }
 
-    public void insertarPedidos(String nombre, ArrayList<ListItem> articulos, String observacion){
-        int id = (int) db.insertarPedido(nombre,observacion);
-        for(int i = 0; i < articulos.size(); i++){
-            int cant = Integer.parseInt(articulos.get(i).getCantidad());
-            if(!articulos.get(i).isHeader() && cant >=1){
-                int stock = Integer.parseInt(articulos.get(i).getStock());
-                db.insertarLineaPedido(id,Integer.parseInt(articulos.get(i).getId()), cant, stock);
-                pedidos.add(articulos.get(i));
-            }
-        }
-        cargarPedidos();
-        String [] parametros = {nombre, String.valueOf(id), observacion};
-        generarPdf.showProgressDialog("Generando PDF");
-        presentador.generarPdf(parametros, pedidos);
-    }
 
     private boolean checkPermission() {
         int result;
@@ -291,6 +282,11 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     @Override
     public void mostrarPedidoTorta(ArrayList<String> ptorta) {
         showDialogTorta(ptorta);
+    }
+
+    @Override
+    public void mostrarError(String mensaje) {
+        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 
 

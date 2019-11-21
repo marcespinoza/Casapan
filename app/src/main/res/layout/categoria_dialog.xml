@@ -25,11 +25,12 @@
         android:id="@+id/agregarcategoria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/blue_400"
+        android:textColor="@color/grey_300"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         app:rippleColor="@color/blue_400"
         app:cornerRadius="10dp"
+        app:backgroundTint="@color/button_color_states"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:strokeColor="@color/blue_400"
         android:text="Agregar" />

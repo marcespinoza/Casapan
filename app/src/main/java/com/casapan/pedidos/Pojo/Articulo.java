@@ -58,6 +58,11 @@ public class Articulo implements ListItem {
     }
 
     @Override
+    public String getIdArticulo() {
+        return null;
+    }
+
+    @Override
     public int getTorta() {
         return 0;
     }
@@ -89,6 +94,11 @@ public class Articulo implements ListItem {
 
     @Override
     public void setObservacion(String observacion) {
+
+    }
+
+    @Override
+    public void setIdArticulo(String id) {
 
     }
 

@@ -40,6 +40,11 @@ public class Pedido implements ListItem {
     }
 
     @Override
+    public String getIdArticulo() {
+        return null;
+    }
+
+    @Override
     public int getTorta() {
         return torta;
     }
@@ -71,6 +76,11 @@ public class Pedido implements ListItem {
     @Override
     public void setObservacion(String obs) {
         this.obs = obs;
+    }
+
+    @Override
+    public void setIdArticulo(String id) {
+
     }
 
     public String getUsuario() {

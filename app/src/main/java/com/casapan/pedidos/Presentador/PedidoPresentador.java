@@ -27,9 +27,11 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
     }
 
     @Override
-    public void armarPedidoTorta(String [] params) {
-        modelo.pedidoTorta(params);
+    public void armarPedidoTorta(String idpedido, String[] params) {
+        modelo.pedidoTorta(idpedido, params);
     }
+
+
 
     @Override
     public void generarPdf(String[] params, ArrayList<ListItem> pedidos) {
@@ -47,7 +49,22 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
     }
 
     @Override
+    public void actualizarPedido(String id, String usuario, ArrayList<ListItem> pedidos, String obs) {
+        modelo.updatePedido(id, usuario, pedidos, obs);
+    }
+
+    @Override
     public void enviarPedidoTorta(ArrayList<String> ptorta) {
         vista.mostrarPedidoTorta(ptorta);
+    }
+
+    @Override
+    public void mostrarError(String mensaje) {
+        vista.mostrarError(mensaje);
+    }
+
+    @Override
+    public void armarPedido(String usuario, ArrayList<ListItem> pedidos, String obs) {
+        modelo.pedido(usuario, pedidos, obs);
     }
 }

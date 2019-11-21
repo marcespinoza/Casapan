@@ -5,21 +5,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.casapan.pedidos.Interface.ListItem;
-import com.casapan.pedidos.Pojo.ListaPedido;
 import com.casapan.pedidos.R;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -51,14 +44,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(holder.getItemViewType()== TYPE_ITEM){
             ArticuloHolder articuloHolder = (ArticuloHolder) holder;
             articuloHolder.descArticulo.setText(aList.get(position).getNombre());
-            if(editPedidos!=null &&aList.get(position).getNombre().equalsIgnoreCase(editPedidos.get(position).getNombre())){
-                articuloHolder.cantidad.setText(editPedidos.get(position).getCantidad());
-                articuloHolder.stock.setText(editPedidos.get(position).getStock());
-                aList.get(position).setId(editPedidos.get(position).getId());
-            }else{
-                articuloHolder.cantidad.setText("0");
-                articuloHolder.stock.setText("0");
-            }
             articuloHolder.cantidad.setShowSoftInputOnFocus(false);
             articuloHolder.cantidad.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -93,6 +78,28 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     aList.get(position).setStock(e.toString());
                 }
             });
+            articuloHolder.cantidad.setText("0");
+            articuloHolder.stock.setText("0");
+            for (ListItem listItem : editPedidos) {
+                if (listItem.getNombre().equalsIgnoreCase(aList.get(position).getNombre())) {
+                    articuloHolder.cantidad.setText(listItem.getCantidad());
+                    articuloHolder.stock.setText(listItem.getStock());
+                    aList.get(position).setId(listItem.getId());
+                }
+            }
+            /*if(editPedidos!=null && editPedidos.size()>position){
+                if(aList.contains(editPedidos.get(position).getNombre())){
+*//*
+                if(aList.get(position).getNombre().equalsIgnoreCase(editPedidos.get(position).getNombre())){
+*//*
+                  articuloHolder.cantidad.setText(editPedidos.get(position).getCantidad());
+                  articuloHolder.stock.setText(editPedidos.get(position).getStock());
+                  aList.get(position).setId(editPedidos.get(position).getId());
+                }
+            }else{
+                articuloHolder.cantidad.setText("0");
+                articuloHolder.stock.setText("0");
+            }*/
             articuloHolder.agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

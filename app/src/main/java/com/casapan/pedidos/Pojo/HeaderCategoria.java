@@ -30,11 +30,16 @@ public class HeaderCategoria implements ListItem {
 
     @Override
     public String getStock() {
-        return null;
+        return "0";
     }
 
     @Override
     public String getObservacion() {
+        return null;
+    }
+
+    @Override
+    public String getIdArticulo() {
         return null;
     }
 
@@ -70,6 +75,11 @@ public class HeaderCategoria implements ListItem {
 
     @Override
     public void setObservacion(String observacion) {
+
+    }
+
+    @Override
+    public void setIdArticulo(String id) {
 
     }
 

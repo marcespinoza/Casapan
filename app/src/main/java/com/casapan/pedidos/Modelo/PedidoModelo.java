@@ -1,27 +1,24 @@
 package com.casapan.pedidos.Modelo;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.casapan.pedidos.App.GlobalApplication;
-import com.casapan.pedidos.BuildConfig;
 import com.casapan.pedidos.Database.DatabaseHelper;
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Interface.PedidoInterface;
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.Constants;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -69,20 +66,72 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         presentador.enviarPedidoTorta(ptorta);
     }
 
+
+
     @Override
-    public void pedidoTorta(String [] params) {
-        guardarTorta(params);
+    public void pedidoTorta(String idpedido, String[] params) {
+        if(idpedido==null){
+          guardarTorta(params);
+        }else{
+          actualizarTorta(idpedido, params);
+        }
     }
 
-    public void guardarTorta(String [] params){
+
+    public void guardarTorta(String[] params){
        long id = db.insertarPedidoTorta(sucursal, params);
-       new GeneraPedidoTorta(id).execute(params);
+       if(id!=-1){
+           new GeneraPedidoTorta(id).execute(params);
+       }else{
+           presentador.mostrarError("Error al guardar pedido.");
+       }
+
+    }
+
+    public void actualizarTorta(String id, String [] params){
+        long idupdate = db.updatePedidoTorta(id, params);
+        if(idupdate!=-1){
+            new GeneraPedidoTorta(Long.parseLong(id)).execute(params);
+        }else{
+            presentador.mostrarError("Error al actualizar pedido.");
+        }
+    }
+
+    @Override
+    public void updatePedido(String id, String usuario, ArrayList<ListItem> pedidos, String obs) {
+        long idupdate = db.updatePedido(id, usuario, obs, pedidos);
+        if (idupdate!=-1) {
+            String [] parametros = {usuario, id, obs};
+            Object [] objects = {parametros, pedidos};
+            new GeneraPedido().execute(objects);
+        }else{
+            presentador.mostrarError("Error al actualizar pedido.");
+        }
+    }
+
+    public void insertarPedidos(String nombre, ArrayList<ListItem> articulos, String observacion){
+        int id = (int) db.insertarPedido(nombre,observacion);
+        for(int i = 0; i < articulos.size(); i++){
+            int cant = Integer.parseInt(articulos.get(i).getCantidad());
+            if(!articulos.get(i).isHeader() && cant >=1){
+                int stock = Integer.parseInt(articulos.get(i).getStock());
+                db.insertarLineaPedido(id,Integer.parseInt(articulos.get(i).getId()), cant, stock);
+            }
+        }
+        String [] parametros = {nombre, String.valueOf(id), observacion};
+        Object [] objects = {parametros, articulos};
+        new GeneraPedido().execute(objects);
     }
 
     @Override
     public void generarPdf(String [] params, ArrayList<ListItem> pedidos) {
         Object [] objects = {params, pedidos};
         new GeneraPedido().execute(objects);
+    }
+
+    @Override
+    public void pedido(String usuario, ArrayList<ListItem> pedidos, String obs) {
+        insertarPedidos(usuario, pedidos, obs);
     }
 
     private class GeneraPedido extends AsyncTask<Object, Integer, String> {
@@ -118,34 +167,42 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 document.add(suc);
                 Paragraph obs = new Paragraph("Observacion: "+params[2]);
                 document.add(obs);
-                float[] columnWidths = new float[]{ 100f, 10f, 10f};
+                float[] columnWidths = new float[]{ 90f, 20f, 20f};
                 //---Encabezado--//
+                Font f = new Font(Font.FontFamily.HELVETICA, 19.0f, Font.BOLD, BaseColor.BLACK);
+                Font f2 = new Font(Font.FontFamily.HELVETICA, 18.0f, Font.NORMAL, BaseColor.BLACK);
                 PdfPTable table = new PdfPTable(3);
                 table.setSpacingBefore(20);
                 table.setWidthPercentage(100);
                 table.setWidths(columnWidths);
-                PdfPCell headerproducto= new PdfPCell(new Phrase("Producto"));
+                PdfPCell headerproducto= new PdfPCell(new Phrase("Producto",f));
                 table.addCell(headerproducto);
-                PdfPCell headercantidad = new PdfPCell(new Phrase("Cant."));
+                PdfPCell headercantidad = new PdfPCell(new Phrase("Cant.",f));
                 table.addCell(headercantidad);
-                PdfPCell headerstock = new PdfPCell(new Phrase("Stock"));
+                PdfPCell headerstock = new PdfPCell(new Phrase("Stock",f));
                 table.addCell(headerstock);
                 document.add(table);
-
                 for(int i = 0; i < pedidos.size(); i++){
+                    if(!pedidos.get(i).isHeader()){
                     PdfPTable tablelineapedido = new PdfPTable(3);
                     tablelineapedido.setWidthPercentage(100);
                     tablelineapedido.setWidths(columnWidths);
-                    PdfPCell producto= new PdfPCell(new Phrase(pedidos.get(i).getNombre()));
+                    PdfPCell producto= new PdfPCell(new Phrase(pedidos.get(i).getNombre(),f2));
                     producto.setBorder(Rectangle.NO_BORDER);
-                    tablelineapedido.addCell(producto);
-                    PdfPCell cantidad = new PdfPCell(new Phrase(pedidos.get(i).getCantidad()));
+                    PdfPCell cantidad = new PdfPCell(new Phrase(pedidos.get(i).getCantidad(),f2));
                     cantidad.setBorder(Rectangle.NO_BORDER);
-                    tablelineapedido.addCell(cantidad);
-                    PdfPCell stock = new PdfPCell(new Phrase(pedidos.get(i).getStock()));
+                    PdfPCell stock = new PdfPCell(new Phrase(pedidos.get(i).getStock(),f2));
                     stock.setBorder(Rectangle.NO_BORDER);
+                    if(i % 2 ==0){
+                        producto.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                        cantidad.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                        stock.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    }
+                    tablelineapedido.addCell(producto);
+                    tablelineapedido.addCell(cantidad);
                     tablelineapedido.addCell(stock);
                     document.add(tablelineapedido);
+                 }
                 }
                 pedidos.clear();
                 document.close();
@@ -161,10 +218,8 @@ public class PedidoModelo implements PedidoInterface.Modelo {
             return params[1];
         }
 
-
         @Override
         protected void onPreExecute() {
-
         }
 
         @Override
@@ -180,11 +235,9 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         Date todayDate = new Date();
         String fecha = currentDate.format(todayDate);
         long id = 0;
-
         public GeneraPedidoTorta(long id) {
             this.id = id;
         }
-
         @Override
         protected String doInBackground(String... params) {
 

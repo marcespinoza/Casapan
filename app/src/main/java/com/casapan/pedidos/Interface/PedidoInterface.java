@@ -8,23 +8,29 @@ public interface PedidoInterface {
         void mostrarPedidos();
         void mostrarPdf(String id);
         void mostrarPedidoTorta(ArrayList<String>ptorta);
+        void mostrarError(String mensaje);
     }
 
     interface Presentador{
         void getPedidos();
         void mostrarPedidos();
-        void armarPedidoTorta(String [] params);
+        void armarPedidoTorta(String idpedido, String[] params);
         void generarPdf(String[] params, ArrayList<ListItem> pedidos);
         void mostrarPdf(String path);
         void actualizarPedidoTorta(String id);
+        void actualizarPedido(String id, String usuario, ArrayList<ListItem> pedidos, String obs);
         void enviarPedidoTorta(ArrayList<String> ptorta);
+        void mostrarError(String mensaje);
+        void armarPedido(String usuario, ArrayList<ListItem> pedidos, String obs);
     }
 
     interface Modelo{
         void getPedidos();
         void obtenerPedidoTorta(String id);
-        void pedidoTorta(String [] params);
+        void updatePedido(String id, String usuario, ArrayList<ListItem> pedidos, String obs);
+        void pedidoTorta(String idpedido, String[] params);
         void generarPdf(String [] params, ArrayList<ListItem>pedidos);
+        void pedido(String usuario, ArrayList<ListItem> pedidos, String obs);
     }
 
 }

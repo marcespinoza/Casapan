@@ -57,8 +57,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "bizcochuelo" + " TEXT,"+
             "relleno1" + " TEXT,"+
             "relleno2" + " TEXT,"+
-            "textotorta" + " TEXT,"+
-            "adorno" + " TEXT);";
+            "textotorta" + " TEXT DEFAULT '',"+
+            "adorno" + " TEXT DEFAULT '');";
 
     private static final String CREATE_TABLE_LINEA_PEDIDO = "CREATE TABLE "
             + TABLE_LINEA_PEDIDO + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ "id_pedido" + " INTEGER, "+ ID_ARTICULO + " INTEGER,"+ "stock" +" INTEGER," + "cantidad" + " INTEGER );";
@@ -222,20 +222,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updatePedido(String id, String nombre, String obs, ArrayList<ListItem> pedidos){
+    public long updatePedido(String idpedido, String nombre, String obs, ArrayList<ListItem> pedidos){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(USUARIO, nombre);
         contentValues.put(OBS, obs);
-        db.update("pedido", contentValues, "id = ? ", new String[] { id } );
+        long idupdate = 0;
+        db.update("pedido", contentValues, "id = ? ", new String[] { idpedido } );
         for(int i = 0; i < pedidos.size(); i++){
+            if(!pedidos.get(i).isHeader()){
             ContentValues contentPedidos = new ContentValues();
-            String idpedido = pedidos.get(i).getId();
-            contentPedidos.put("cantidad", pedidos.get(i).getCantidad());
-            contentPedidos.put("stock", pedidos.get(i).getStock());
-            db.update("linea_pedido", contentPedidos, "id_pedido = ? and id = ?", new String[] { id, idpedido } );
+            String id_linea_pedido = pedidos.get(i).getId();
+            String cantidad = pedidos.get(i).getCantidad();
+            String stock = pedidos.get(i).getStock();
+            contentPedidos.put("cantidad", cantidad);
+            contentPedidos.put("stock", stock);
+            if(!cantidad.equals("0")){
+              idupdate = db.update("linea_pedido", contentPedidos, "id = ? and id_pedido = ?", new String[] { id_linea_pedido, idpedido } );
+              if(idupdate==0){
+                int id_update = Integer.parseInt(idpedido);
+                insertarLineaPedido(id_update, Integer.parseInt(idpedido), Integer.parseInt(cantidad), Integer.parseInt(stock));
+              }
+            }else{
+                borrarLineaPedido(pedidos.get(i).getId());
+            }
+          }
         }
-        return true;
+        return idupdate;
+    }
+
+    public long updatePedidoTorta(String id, String [] params){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("torta", 1);
+        contentValues.put("cliente", params[0]);
+        contentValues.put("telefono", params[1]);
+        contentValues.put("fecha_entrega", params[2]);
+        contentValues.put("hora_entrega", params[3]);
+        contentValues.put("kilo", params[4]);
+        contentValues.put("bizcochuelo", params[5]);
+        contentValues.put("relleno1", params[6]);
+        contentValues.put("relleno2", params[7]);
+        contentValues.put("textotorta", params[19]);
+        contentValues.put("adorno", params[20]);
+        contentValues.put("usuario", params[21]);
+        contentValues.put("observacion", "Cliente: "+params[0]);
+        db.update("pedido", contentValues, "id = ?", new String[] { id} );
+        long update = updateExtra(id, params);
+        return update;
+    }
+
+    public long updateExtra(String id, String [] params){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("blanco", params[8]);
+        contentValues.put("amarillo", params[9]);
+        contentValues.put("rosado", params[10]);
+        contentValues.put("lila", params[11]);
+        contentValues.put("verde", params[12]);
+        contentValues.put("celeste", params[13]);
+        contentValues.put("anaranjado", params[14]);
+        contentValues.put("cereza", params[15]);
+        contentValues.put("mani", params[16]);
+        contentValues.put("chipchocolate", params[17]);
+        contentValues.put("baniochocolate", params[18]);
+        long idupdate = db.update("extra", contentValues, "id = ?", new String[] { id} );
+        return idupdate;
     }
 
     //-----------DELETE---------------//
@@ -257,6 +309,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Integer borrarLineaPedido (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("linea_pedido",
+                "id = ? ",
+                new String[] { id});
+    }
+
+    public Integer borrarLineasPorPedido (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("linea_pedido",
+                "id_pedido = ? ",
+                new String[] { id});
+    }
+
+    public Integer borrarExtra (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("extra",
                 "id_pedido = ? ",
                 new String[] { id});
     }
@@ -290,7 +356,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<ListItem> getPedidosbyId(String id) {
         ArrayList<ListItem> lPedidos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select p.id, p.usuario, p.observacion, a.nombre, lp.id, lp.cantidad, lp.stock from pedido p inner join linea_pedido lp on p.id=lp.id_pedido inner join articulo a on a.id=lp.id_articulo where p.id="+id+" ", null );
+        Cursor res =  db.rawQuery( "select p.id, p.usuario, p.observacion, a.nombre, lp.id, lp.cantidad, lp.stock, lp.id_articulo from pedido p inner join linea_pedido lp on p.id=lp.id_pedido inner join articulo a on a.id=lp.id_articulo where p.id="+id+" ", null );
         if(res.getCount()>0){
         res.moveToFirst();
         Pedido pedido = new Pedido();
@@ -304,6 +370,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             lp.setNombre(res.getString(3));
             lp.setCantidad(res.getString(5));
             lp.setStock(res.getString(6));
+            lp.setIdArticulo(res.getString(7));
             lPedidos.add(lp);
             res.moveToNext();
         }
@@ -314,13 +381,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<String> getPedidoTortabyId(String id){
         ArrayList<String>ptorta = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select p.local, p.cliente, p.telefono, p.fecha_entrega, " +
+        Cursor res =  db.rawQuery( "select p.id, p.cliente, p.telefono, p.fecha_entrega, " +
                                     "p.hora_entrega, p.kilo, p.bizcochuelo, p.relleno1, p.relleno2, " +
-                                    "p.textotorta, p.adorno, e.blanco, e.amarillo, e.rosado," +
-                "e.lila, e.verde, e.celeste, e.anaranjado, e.cerezas, e.mani, e.chipchocolate, e.baniochocolate from pedido p inner join extra e on p.id=e.id_pedido" , null );
+                                    " e.blanco, e.amarillo, e.rosado,e.lila, e.verde, e.celeste, e.anaranjado," +
+                                    " e.cereza, e.mani, e.chipchocolate, e.baniochocolate, p.textotorta, p.adorno, " +
+                                    "p.usuario from pedido p inner join extra e on p.id=e.id_pedido where p.id="+id+"" , null );
 
         if(res.moveToFirst()){
-            for(int i = 0; i <=21; i++){
+            for(int i = 0; i <=22; i++){
              ptorta.add(res.getString(i));
             }
         }return ptorta;

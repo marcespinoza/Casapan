@@ -1,44 +1,31 @@
 package com.casapan.pedidos.Vista;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import com.casapan.pedidos.Interface.ListItem;
+
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,13 +103,13 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.adornosi) RadioButton adornosi;
     @BindView(R.id.adornono) RadioButton adornono;
     @BindView(R.id.tomopedido) EditText tomopedido;
-    String  sucursal, kg, bizcochuelo, relleno1, relleno2,  adorno, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
+    String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  adorno, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
     ProgressDialog generarPdf;
     ArrayList<String> ptorta;
     public OnAceptarBoton onAceptarBoton;
 
     public interface OnAceptarBoton{
-        void enviarpath(String [] params);
+        void enviarpath(String idpedido, String[] params);
     }
 
     public void OnAceptarButton(OnAceptarBoton onAceptarBoton){
@@ -134,7 +121,6 @@ public class TortaDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.torta_dialog,container);
         ButterKnife.bind(this, rootView);
-
         sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
         generarPdf = new ProgressDialog(getContext());
         fechapick.setOnClickListener(new View.OnClickListener() {
@@ -234,57 +220,81 @@ public class TortaDialog extends DialogFragment {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 switch (selectedId){
-                    case R.id.adornono:{ adorno = "No";}
-                    case R.id.adornosi:{adorno = "Si";}
-                    default: adorno = "No";
+                    case R.id.adornono:{ adorno = "No"; break;}
+                    case R.id.adornosi:{adorno = "Si"; break;}
+                    default: adorno = "No"; break;
                 }
             }
         });
     }
 
     public void cargarPedido(ArrayList<String> ptorta){
-        cliente.setText(ptorta.get(0));
-        telefono.setText(ptorta.get(1));
-        fechatexto.setText(ptorta.get(2));
-        horatexto.setText(ptorta.get(3));
-        String kg = ptorta.get(4);
+        idpedido = ptorta.get(0);
+        cliente.setText(ptorta.get(1));
+        telefono.setText(ptorta.get(2));
+        fechatexto.setText(ptorta.get(3));
+        horatexto.setText(ptorta.get(4));
+        String kg = ptorta.get(5);
         switch (kg){
            case "3": treskg.setChecked(true); break;
            case "4": cuatrokg.setChecked(true); break;
            case "5": cincokg.setChecked(true); break;
         }
-        switch (bizcochuelo){
+        String bz = ptorta.get(6);
+        switch (bz){
             case "chocolate": bchocolate.setChecked(true); break;
             case "vainilla": bvainilla.setChecked(true); break;
         }
-        switch (relleno1){
-            case "Dulce de leche": rdleche.setChecked(true);
-            case "D. leche con hojaldre": rdlechehojaldre.setChecked(true);
-            case "D. leche con chocolate": rdlechechocolate.setChecked(true);
-            case "D. leche con rocklet": rdlecherocklet.setChecked(true);
-            case "D. leche con durazno": rdlechedurazno.setChecked(true);
-            case "Crema chantilly": cchantilly.setChecked(true);
-            case "Crema americana": camericana.setChecked(true);
-            case "Crema moca": cmoca.setChecked(true);
-            case "Crema bombon": cbombon.setChecked(true);
-            case "Chantilly con durazno": chantillydurazno.setChecked(true);
-            case "Chantilly con anana": chantillyanana.setChecked(true);
-            case "Mousse de frutilla": mousse.setChecked(true);
+        String rellenoUno = ptorta.get(7);
+        switch (rellenoUno){
+            case "Dulce de leche": rdleche.setChecked(true); break;
+            case "D. leche con hojaldre": rdlechehojaldre.setChecked(true);break;
+            case "D. leche con chocolate": rdlechechocolate.setChecked(true);break;
+            case "D. leche con rocklet": rdlecherocklet.setChecked(true);break;
+            case "D. leche con durazno": rdlechedurazno.setChecked(true);break;
+            case "Crema chantilly": cchantilly.setChecked(true);break;
+            case "Crema americana": camericana.setChecked(true);break;
+            case "Crema moca": cmoca.setChecked(true);break;
+            case "Crema bombon": cbombon.setChecked(true);break;
+            case "Chantilly con durazno": chantillydurazno.setChecked(true);break;
+            case "Chantilly con ananá": chantillyanana.setChecked(true);break;
+            case "Mousse de frutilla": mousse.setChecked(true);break;
         }
-        switch (relleno2){
-            case "Dulce de leche": rdleche2.setChecked(true);
-            case "D. leche con hojaldre": rdlechehojaldre2.setChecked(true);
-            case "D. leche con chocolate": rdlechechocolate2.setChecked(true);
-            case "D. leche con rocklet": rdlecherocklet2.setChecked(true);
-            case "D. leche con durazno": rdlechedurazno2.setChecked(true);
-            case "Crema chantilly": cchantilly2.setChecked(true);
-            case "Crema americana": camericana2.setChecked(true);
-            case "Crema moca": cmoca2.setChecked(true);
-            case "Crema bombon": cbombon2.setChecked(true);
-            case "Chantilly con durazno": chantillydurazno2.setChecked(true);
-            case "Chantilly con anana": chantillyanana2.setChecked(true);
-            case "Mousse de frutilla": mousse2.setChecked(true);
+        String rellenoDos = ptorta.get(8);
+        switch (rellenoDos){
+            case "Dulce de leche": rdleche2.setChecked(true);break;
+            case "D. leche con hojaldre": rdlechehojaldre2.setChecked(true);break;
+            case "D. leche con chocolate": rdlechechocolate2.setChecked(true);break;
+            case "D. leche con rocklet": rdlecherocklet2.setChecked(true);break;
+            case "D. leche con durazno": rdlechedurazno2.setChecked(true);break;
+            case "Crema chantilly": cchantilly2.setChecked(true);break;
+            case "Crema americana": camericana2.setChecked(true);break;
+            case "Crema moca": cmoca2.setChecked(true);break;
+            case "Crema bombon": cbombon2.setChecked(true);break;
+            case "Chantilly con durazno": chantillydurazno2.setChecked(true);break;
+            case "Chantilly con anana": chantillyanana2.setChecked(true);break;
+            case "Mousse de frutilla": mousse2.setChecked(true);break;
         }
+        //----Colores----//
+        rblanco.setChecked(ptorta.get(9).equals("")?false:true);
+        ramarillo.setChecked(ptorta.get(10).equals("")?false:true);
+        rrosado.setChecked(ptorta.get(11).equals("")?false:true);
+        rlila.setChecked(ptorta.get(12).equals("")?false:true);
+        rverde.setChecked(ptorta.get(13).equals("")?false:true);
+        rceleste.setChecked(ptorta.get(14).equals("")?false:true);
+        ranaranjado.setChecked(ptorta.get(15).equals("")?false:true);
+        //-----Extras------//
+        rcereza.setChecked(ptorta.get(16).equals("")?false:true);
+        rmani.setChecked(ptorta.get(17).equals("")?false:true);
+        rchipchocolate.setChecked(ptorta.get(18).equals("")?false:true);
+        rbaniochocolate.setChecked(ptorta.get(19).equals("")?false:true);
+        textotorta.setText(ptorta.get(20));
+        String adorno = ptorta.get(21);
+        switch (adorno){
+            case "Si": adornosi.setChecked(true); break;
+            case "No": adornono.setChecked(true); break;
+         }
+         tomopedido.setText(ptorta.get(22));
     }
 
     public void enviarPedido(){
@@ -306,7 +316,7 @@ public class TortaDialog extends DialogFragment {
         chipchocolate = rchipchocolate.isChecked()? "- Chip de chocolate -": "";
         baniochocolate = rbaniochocolate.isChecked()? "- Baño chocolate cara superior -": "";
         String [] params = {client, tel, fch, hora, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
-        onAceptarBoton.enviarpath(params);
+        onAceptarBoton.enviarpath(idpedido, params);
         dismiss();
     }
 

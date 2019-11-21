@@ -4,15 +4,12 @@ import com.casapan.pedidos.Interface.ListItem;
 
 public class ListaPedido implements ListItem {
 
-    String sucursal;
-    String fecha;
-    String empleado;
+
     String producto;
     String cantidad = "0";
     String stock = "0";
-    String comentario;
-    boolean checked;
     String id;
+    String id_articulo;
 
 
     @Override
@@ -43,6 +40,11 @@ public class ListaPedido implements ListItem {
     @Override
     public String getObservacion() {
         return null;
+    }
+
+    @Override
+    public String getIdArticulo() {
+        return id_articulo;
     }
 
     @Override
@@ -78,6 +80,11 @@ public class ListaPedido implements ListItem {
     @Override
     public void setObservacion(String observacion) {
 
+    }
+
+    @Override
+    public void setIdArticulo(String id_articulo) {
+        this.id_articulo = id_articulo;
     }
 
 

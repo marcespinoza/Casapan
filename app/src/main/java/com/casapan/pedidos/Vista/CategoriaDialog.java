@@ -2,6 +2,9 @@ package com.casapan.pedidos.Vista;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +33,24 @@ public class CategoriaDialog extends DialogFragment {
         View rootView=inflater.inflate(R.layout.categoria_dialog,container);
         db = new DatabaseHelper(getContext());
         aceptar = rootView.findViewById(R.id.agregarcategoria);
+        aceptar.setEnabled(false);
         nombre = rootView.findViewById(R.id.nombrecategoria);
+        nombre.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                aceptar.setEnabled(!TextUtils.isEmpty(charSequence.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
