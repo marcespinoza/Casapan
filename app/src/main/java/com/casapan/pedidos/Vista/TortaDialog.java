@@ -2,7 +2,12 @@ package com.casapan.pedidos.Vista;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableRow;
@@ -18,12 +24,15 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.casapan.pedidos.R;
 import com.casapan.pedidos.Util.Constants;
 import com.casapan.pedidos.Util.ProgressDialog;
 import com.google.android.material.button.MaterialButton;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -103,13 +112,19 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.adornosi) RadioButton adornosi;
     @BindView(R.id.adornono) RadioButton adornono;
     @BindView(R.id.tomopedido) EditText tomopedido;
-    String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  adorno, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
+
+    @BindView(R.id.imagetorta) ImageView imagentorta;
+    Bitmap bitmaptorta = null;
+    String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
+    String adorno = "";
     ProgressDialog generarPdf;
     ArrayList<String> ptorta;
     public OnAceptarBoton onAceptarBoton;
+    public static int GALLERY = 100;
+    public static int CAMERA = 101;
 
     public interface OnAceptarBoton{
-        void enviarpath(String idpedido, String[] params);
+        void enviarpath(String idpedido, String[] params, Bitmap bitmaptorta);
     }
 
     public void OnAceptarButton(OnAceptarBoton onAceptarBoton){
@@ -123,6 +138,12 @@ public class TortaDialog extends DialogFragment {
         ButterKnife.bind(this, rootView);
         sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
         generarPdf = new ProgressDialog(getContext());
+        imagentorta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPictureDialog();
+            }
+        });
         fechapick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,6 +176,48 @@ public class TortaDialog extends DialogFragment {
            cargarPedido(ptorta);
         }
         return rootView;
+    }
+
+  /*  private void openGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICKER);
+
+    }*/
+
+    private void showPictureDialog(){
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(getContext());
+        pictureDialog.setTitle("Seleccionar imagen");
+        String[] pictureDialogItems = {
+                "Galeria",
+                "Camara" };
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                choosePhotoFromGallary();
+                                break;
+                            case 1:
+                                takePhotoFromCamera();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
+    public void choosePhotoFromGallary() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, GALLERY);
+    }
+
+
+    private void takePhotoFromCamera() {
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA);
     }
 
     public void initChecked(){
@@ -226,6 +289,27 @@ public class TortaDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY) {
+            if (data != null) {
+                Uri contentURI = data.getData();
+                try {
+                    bitmaptorta = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                    imagentorta.setImageBitmap(bitmaptorta);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else if (requestCode == CAMERA) {
+            bitmaptorta = (Bitmap) data.getExtras().get("data");
+            imagentorta.setImageBitmap(bitmaptorta);
+        }
     }
 
     public void cargarPedido(ArrayList<String> ptorta){
@@ -316,7 +400,7 @@ public class TortaDialog extends DialogFragment {
         chipchocolate = rchipchocolate.isChecked()? "- Chip de chocolate -": "";
         baniochocolate = rbaniochocolate.isChecked()? "- Baño chocolate cara superior -": "";
         String [] params = {client, tel, fch, hora, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
-        onAceptarBoton.enviarpath(idpedido, params);
+        onAceptarBoton.enviarpath(idpedido, params, bitmaptorta);
         dismiss();
     }
 

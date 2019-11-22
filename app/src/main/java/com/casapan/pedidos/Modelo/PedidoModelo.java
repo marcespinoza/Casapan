@@ -69,29 +69,29 @@ public class PedidoModelo implements PedidoInterface.Modelo {
 
 
     @Override
-    public void pedidoTorta(String idpedido, String[] params) {
+    public void pedidoTorta(String idpedido, String[] params, Bitmap bitmaptorta) {
         if(idpedido==null){
-          guardarTorta(params);
+          guardarTorta(params, bitmaptorta);
         }else{
-          actualizarTorta(idpedido, params);
+          actualizarTorta(idpedido, params, bitmaptorta);
         }
     }
 
 
-    public void guardarTorta(String[] params){
+    public void guardarTorta(String[] params, Bitmap bitmaptorta){
        long id = db.insertarPedidoTorta(sucursal, params);
        if(id!=-1){
-           new GeneraPedidoTorta(id).execute(params);
+           new GeneraPedidoTorta(id, bitmaptorta).execute(params);
        }else{
            presentador.mostrarError("Error al guardar pedido.");
        }
 
     }
 
-    public void actualizarTorta(String id, String [] params){
+    public void actualizarTorta(String id, String[] params, Bitmap bitmaptorta){
         long idupdate = db.updatePedidoTorta(id, params);
         if(idupdate!=-1){
-            new GeneraPedidoTorta(Long.parseLong(id)).execute(params);
+            new GeneraPedidoTorta(Long.parseLong(id), bitmaptorta).execute(params);
         }else{
             presentador.mostrarError("Error al actualizar pedido.");
         }
@@ -182,6 +182,7 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 PdfPCell headerstock = new PdfPCell(new Phrase("Stock",f));
                 table.addCell(headerstock);
                 document.add(table);
+                boolean renglon = false;
                 for(int i = 0; i < pedidos.size(); i++){
                     if(!pedidos.get(i).isHeader()){
                     PdfPTable tablelineapedido = new PdfPTable(3);
@@ -193,11 +194,12 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                     cantidad.setBorder(Rectangle.NO_BORDER);
                     PdfPCell stock = new PdfPCell(new Phrase(pedidos.get(i).getStock(),f2));
                     stock.setBorder(Rectangle.NO_BORDER);
-                    if(i % 2 ==0){
+                    if(renglon){
                         producto.setBackgroundColor(BaseColor.LIGHT_GRAY);
                         cantidad.setBackgroundColor(BaseColor.LIGHT_GRAY);
                         stock.setBackgroundColor(BaseColor.LIGHT_GRAY);
                     }
+                    renglon = !renglon;
                     tablelineapedido.addCell(producto);
                     tablelineapedido.addCell(cantidad);
                     tablelineapedido.addCell(stock);
@@ -235,8 +237,10 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         Date todayDate = new Date();
         String fecha = currentDate.format(todayDate);
         long id = 0;
-        public GeneraPedidoTorta(long id) {
+        Bitmap bitmaptorta =null;
+        public GeneraPedidoTorta(long id, Bitmap bitmaptorta) {
             this.id = id;
+            this.bitmaptorta = bitmaptorta;
         }
         @Override
         protected String doInBackground(String... params) {
@@ -326,6 +330,12 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 document.add(espacio_adorno);
                 Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[21]);
                 document.add(tomoPedido);
+                ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+                bitmaptorta.compress(Bitmap.CompressFormat.PNG, 100, stream2);
+                Image image2 = Image.getInstance(stream2.toByteArray());
+                image2.scaleToFit(200,200);
+                image2.setAlignment(Element.ALIGN_CENTER);
+                document.add(image2);
                 document.close();
             } catch (DocumentException e) {
                 e.printStackTrace();

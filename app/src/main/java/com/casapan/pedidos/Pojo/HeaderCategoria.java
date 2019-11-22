@@ -40,6 +40,11 @@ public class HeaderCategoria implements ListItem {
 
     @Override
     public String getIdArticulo() {
+        return "";
+    }
+
+    @Override
+    public String getIdLineaPedido() {
         return null;
     }
 
@@ -80,6 +85,11 @@ public class HeaderCategoria implements ListItem {
 
     @Override
     public void setIdArticulo(String id) {
+
+    }
+
+    @Override
+    public void setIdLineaPedido(String id) {
 
     }
 

@@ -80,12 +80,14 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
             articuloHolder.cantidad.setText("0");
             articuloHolder.stock.setText("0");
+            if(editPedidos!=null){
             for (ListItem listItem : editPedidos) {
                 if (listItem.getNombre().equalsIgnoreCase(aList.get(position).getNombre())) {
                     articuloHolder.cantidad.setText(listItem.getCantidad());
                     articuloHolder.stock.setText(listItem.getStock());
-                    aList.get(position).setId(listItem.getId());
+                    aList.get(position).setIdLineaPedido(listItem.getId());
                 }
+              }
             }
             /*if(editPedidos!=null && editPedidos.size()>position){
                 if(aList.contains(editPedidos.get(position).getNombre())){

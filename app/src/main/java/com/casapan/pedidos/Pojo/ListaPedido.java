@@ -48,6 +48,11 @@ public class ListaPedido implements ListItem {
     }
 
     @Override
+    public String getIdLineaPedido() {
+        return "";
+    }
+
+    @Override
     public int getTorta() {
         return 0;
     }
@@ -85,6 +90,11 @@ public class ListaPedido implements ListItem {
     @Override
     public void setIdArticulo(String id_articulo) {
         this.id_articulo = id_articulo;
+    }
+
+    @Override
+    public void setIdLineaPedido(String id) {
+
     }
 
 

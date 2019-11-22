@@ -563,6 +563,13 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/imagetorta"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_image"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

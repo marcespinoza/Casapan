@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -134,9 +135,9 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
         }
         tDialog.OnAceptarButton(new TortaDialog.OnAceptarBoton() {
             @Override
-            public void enviarpath(String idpedido, String[] params) {
+            public void enviarpath(String idpedido, String[] params, Bitmap bitmaptorta) {
                 generarPdf.showProgressDialog("Generando PDF");
-                presentador.armarPedidoTorta(idpedido, params);
+                presentador.armarPedidoTorta(idpedido, params, bitmaptorta);
             }
         });
         tDialog.show(fm, "Fragment torta");

@@ -95,11 +95,13 @@ public class PedidoDialog extends DialogFragment {
     public void cargarArticulos(){
         ArrayList<Articulo> lArt = db.getArticulosPorCategoria();
         ArrayList<ListItem> editPedidos = null;
-        if(idedicion!=null){
+        if(idedicion!=null ){
             editPedidos = db.getPedidosbyId(idedicion);
-            usuario.setText(editPedidos.get(0).getNombre());
-            obser.setText(editPedidos.get(0).getObservacion());
-            id = editPedidos.get(0).getId();
+            if(editPedidos!=null){
+                usuario.setText(editPedidos.get(0).getNombre());
+                obser.setText(editPedidos.get(0).getObservacion());
+                id = editPedidos.get(0).getId();
+            }
         }
         String categoria = "";
         for(int i = 0; i < lArt.size(); i++){
@@ -132,9 +134,6 @@ public class PedidoDialog extends DialogFragment {
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
-    public void guardarPedidos(){
-
-    }
 
     @Override
     public void onResume() {

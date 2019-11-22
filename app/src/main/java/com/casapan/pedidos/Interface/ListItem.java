@@ -8,6 +8,7 @@ public interface ListItem {
     String getStock();
     String getObservacion();
     String getIdArticulo();
+    String getIdLineaPedido();
     int getTorta();
     void setId(String id);
     void setNombre(String nombre);
@@ -16,4 +17,5 @@ public interface ListItem {
     void setTorta(int torta);
     void setObservacion(String observacion);
     void setIdArticulo(String id);
+    void setIdLineaPedido(String id);
 }

@@ -1,5 +1,7 @@
 package com.casapan.pedidos.Presentador;
 
+import android.graphics.Bitmap;
+
 import com.casapan.pedidos.Interface.ListItem;
 import com.casapan.pedidos.Interface.PedidoInterface;
 import com.casapan.pedidos.Modelo.PedidoModelo;
@@ -27,11 +29,9 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
     }
 
     @Override
-    public void armarPedidoTorta(String idpedido, String[] params) {
-        modelo.pedidoTorta(idpedido, params);
+    public void armarPedidoTorta(String idpedido, String[] params, Bitmap bitmaptorta) {
+        modelo.pedidoTorta(idpedido, params, bitmaptorta);
     }
-
-
 
     @Override
     public void generarPdf(String[] params, ArrayList<ListItem> pedidos) {

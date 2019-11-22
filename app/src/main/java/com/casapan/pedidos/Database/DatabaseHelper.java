@@ -232,19 +232,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for(int i = 0; i < pedidos.size(); i++){
             if(!pedidos.get(i).isHeader()){
             ContentValues contentPedidos = new ContentValues();
-            String id_linea_pedido = pedidos.get(i).getId();
+            String id_linea_pedido = pedidos.get(i).getIdLineaPedido();
             String cantidad = pedidos.get(i).getCantidad();
             String stock = pedidos.get(i).getStock();
+            String id_articulo = pedidos.get(i).getIdArticulo();
             contentPedidos.put("cantidad", cantidad);
             contentPedidos.put("stock", stock);
             if(!cantidad.equals("0")){
-              idupdate = db.update("linea_pedido", contentPedidos, "id = ? and id_pedido = ?", new String[] { id_linea_pedido, idpedido } );
+              idupdate = db.update("linea_pedido", contentPedidos, "id = ? and id_articulo = ?", new String[] { id_linea_pedido, id_articulo } );
               if(idupdate==0){
-                int id_update = Integer.parseInt(idpedido);
-                insertarLineaPedido(id_update, Integer.parseInt(idpedido), Integer.parseInt(cantidad), Integer.parseInt(stock));
+                int id_pedido = Integer.parseInt(idpedido);
+                insertarLineaPedido(id_pedido, Integer.parseInt(pedidos.get(i).getId()), Integer.parseInt(cantidad), Integer.parseInt(stock));
               }
             }else{
-                borrarLineaPedido(pedidos.get(i).getId());
+                borrarLineaPedido(id_linea_pedido);
             }
           }
         }
@@ -356,7 +357,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<ListItem> getPedidosbyId(String id) {
         ArrayList<ListItem> lPedidos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select p.id, p.usuario, p.observacion, a.nombre, lp.id, lp.cantidad, lp.stock, lp.id_articulo from pedido p inner join linea_pedido lp on p.id=lp.id_pedido inner join articulo a on a.id=lp.id_articulo where p.id="+id+" ", null );
+        Cursor res =  db.rawQuery( "select p.id, p.usuario, p.observacion, a.nombre, lp.id, lp.cantidad, lp.stock, lp.id_articulo from pedido p left join linea_pedido lp on p.id=lp.id_pedido left join articulo a on a.id=lp.id_articulo where p.id="+id+" ", null );
         if(res.getCount()>0){
         res.moveToFirst();
         Pedido pedido = new Pedido();
@@ -401,7 +402,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         res.moveToFirst();
         while(res.isAfterLast() == false){
             Articulo articulo = new Articulo();
-            articulo.setId(res.getString(0));
+            articulo.setIdArticulo(res.getString(0));
             articulo.setNombre(res.getString(1));
             articulo.setIdCategoria(res.getString(2));
             articulo.setCategoria(res.getString(3));
