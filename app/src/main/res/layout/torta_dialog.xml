@@ -421,49 +421,50 @@
                     android:layout_height="wrap_content"
                     android:text="DECORACION. CREMA CHANTILLY. COLORES (siempre tonos pasteles)" />
 
-                <RadioButton
+
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/blanco"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Blanco" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/amarillo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Amarillo" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/rosado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Rosado" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/lila"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Lila" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/verde"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Verde" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/celeste"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Celeste" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/anaranjado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -484,43 +485,44 @@
                     android:layout_height="wrap_content"
                     android:text="EXTRAS" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cereza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Cereza" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/mani"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Maní" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/chipchocolate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Chip de chocolate" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/baniochocolate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
                     android:text="Baño choc. cara superior" />
 
-                <EditText
-                    android:id="@+id/textotorta"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="TEXTO" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/textotorta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="TEXTO" />
 
         <View
             android:layout_width="match_parent"
@@ -542,7 +544,7 @@
 
             <RadioGroup
                 android:id="@+id/adorno"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
@@ -561,14 +563,43 @@
 
             </RadioGroup>
 
+            <ImageButton
+                android:id="@+id/clearadorno"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_close" />
+
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imagetorta"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_margin="3dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_image"/>
+
+            <ImageButton
+                android:id="@+id/clearimagen"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_gravity="top"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_close" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

@@ -57,9 +57,9 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     String id = listPedidos.get(position).getId();
                     String path = "";
                     if(listPedidos.get(position).getTorta()==1){
-                        path = "/PedidoTorta"+id+"-"+sucursal+"-"+fecha+".pdf";
+                        path = "/Casapan/PedidoTorta"+id+"-"+sucursal+"-"+fecha+".pdf";
                     }else{
-                        path = "/Pedido"+id+"-"+sucursal+"-"+fecha+".pdf";
+                        path = "/Casapan/Pedido"+id+"-"+sucursal+"-"+fecha+".pdf";
                     }
 
                     pdf.ondownload(id, path);

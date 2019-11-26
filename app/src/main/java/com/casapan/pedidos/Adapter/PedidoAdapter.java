@@ -89,19 +89,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
               }
             }
-            /*if(editPedidos!=null && editPedidos.size()>position){
-                if(aList.contains(editPedidos.get(position).getNombre())){
-*//*
-                if(aList.get(position).getNombre().equalsIgnoreCase(editPedidos.get(position).getNombre())){
-*//*
-                  articuloHolder.cantidad.setText(editPedidos.get(position).getCantidad());
-                  articuloHolder.stock.setText(editPedidos.get(position).getStock());
-                  aList.get(position).setId(editPedidos.get(position).getId());
-                }
-            }else{
-                articuloHolder.cantidad.setText("0");
-                articuloHolder.stock.setText("0");
-            }*/
             articuloHolder.agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

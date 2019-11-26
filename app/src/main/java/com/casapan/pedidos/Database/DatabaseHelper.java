@@ -21,7 +21,7 @@ import com.casapan.pedidos.Util.Constants;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Casapanpedidos.db";
+    public static final String DATABASE_NAME = "casapanpedidos.db";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_PEDIDO = "pedido";
     private static final String TABLE_ARTICULO = "articulo";
@@ -80,7 +80,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "cereza" + " INTEGER ,"+
             "mani" + " INTEGER ,"+
             "chipchocolate" + " INTEGER ,"+
-            "baniochocolate" + " INTEGER );";
+            "baniochocolate" + " INTEGER ,"+
+             "pathimagen" + " INTEGER );";
 
 
 
@@ -300,6 +301,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { id});
     }
 
+    public Integer borrarArticuloPorCategoria (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("articulo",
+                "idCategoria = ? ",
+                new String[] { id});
+    }
+
+    public Integer borrarCategoria (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("categoria","id = ? ", new String[] { id});
+    }
+
     public Integer borrarPedido (String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("pedido",
@@ -330,10 +343,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //----------GET--------------//
 
-    public Cursor getPedido(int id) {
+    public boolean existeArticulo(String articulo) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from pedido where id="+id+"", null );
-        return res;
+        Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_ARTICULO + " WHERE "+DESCRIPCION_ARTICULO+"=? ", new String[]{articulo});
+        if (mCursor.getCount()<=0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public boolean existeCategoria(String categoria) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORIA + " WHERE "+NOMBRE+"=? ", new String[]{categoria});
+        if (mCursor.getCount()<=0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     public ArrayList<Pedido> getPedidos() {

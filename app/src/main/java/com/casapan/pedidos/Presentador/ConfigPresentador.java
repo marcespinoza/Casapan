@@ -22,4 +22,24 @@ public class ConfigPresentador implements ConfigInterface.Presentador {
     public void sharedResponse(boolean b) {
         ivista.showToast(b);
     }
+
+    @Override
+    public void importarbd(String path) {
+        imodelo.importarbd(path);
+    }
+
+    @Override
+    public void exportarbd() {
+        imodelo.exportarbd();
+    }
+
+    @Override
+    public void reiniciarApp() {
+        ivista.reiniciarApp();
+    }
+
+    @Override
+    public void mostrartoast() {
+        ivista.mostrartoast();
+    }
 }

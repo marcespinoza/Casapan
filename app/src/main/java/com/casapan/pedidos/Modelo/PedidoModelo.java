@@ -142,8 +142,11 @@ public class PedidoModelo implements PedidoInterface.Modelo {
             ArrayList<ListItem> pedidos = (ArrayList<ListItem>) parameters[1];
 
             Document document = new Document();
-            String fpath = Environment.getExternalStorageDirectory().getPath() + "/Pedido"+params[1]+"-"+sucursal+"-"+fecha+".pdf";
-            File file = new File(fpath);
+            String path = "/Pedido"+params[1]+"-"+sucursal+"-"+fecha+".pdf";
+            String pathfolder = Environment.getExternalStorageDirectory().getPath() + "/Casapan";
+            File folder = new File(pathfolder);
+            folder.mkdirs();
+            File file = new File(pathfolder+path);
             try {
                 Drawable d = ContextCompat.getDrawable(context, R.drawable.logo_casapan);
                 BitmapDrawable bitDw = ((BitmapDrawable) d);
@@ -226,7 +229,7 @@ public class PedidoModelo implements PedidoInterface.Modelo {
 
         @Override
         protected void onPostExecute(String result) {
-           String path = "/Pedido"+result+"-"+sucursal+"-"+fecha+".pdf";
+           String path = "/Casapan/Pedido"+result+"-"+sucursal+"-"+fecha+".pdf";
            presentador.mostrarPdf(path);
         }
     }
@@ -237,7 +240,7 @@ public class PedidoModelo implements PedidoInterface.Modelo {
         Date todayDate = new Date();
         String fecha = currentDate.format(todayDate);
         long id = 0;
-        Bitmap bitmaptorta =null;
+        Bitmap bitmaptorta;
         public GeneraPedidoTorta(long id, Bitmap bitmaptorta) {
             this.id = id;
             this.bitmaptorta = bitmaptorta;
@@ -247,36 +250,39 @@ public class PedidoModelo implements PedidoInterface.Modelo {
 
             Document document = new Document();
             String path = "/PedidoTorta"+id+"-"+sucursal+"-"+fecha+".pdf";
-            String fpath = Environment.getExternalStorageDirectory().getPath() + path;
-            File file = new File(fpath);
+            String pathfolder = Environment.getExternalStorageDirectory().getPath() + "/Casapan";
+            File folder = new File(pathfolder);
+            folder.mkdirs();
+            File file = new File(pathfolder+path);
             try {
                 Drawable d = ContextCompat.getDrawable(context, R.drawable.logo_casapan);
                 BitmapDrawable bitDw = ((BitmapDrawable) d);
                 Bitmap bmp = bitDw.getBitmap();
+                Font f = new Font(Font.FontFamily.HELVETICA, 17.0f, Font.BOLD, BaseColor.BLACK);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                 Image image = Image.getInstance(stream.toByteArray());
                 image.scaleToFit(100,50);
                 image.setAlignment(Element.ALIGN_CENTER);
                 PdfWriter.getInstance(document,new FileOutputStream(file));
                 document.open();
                 document.add(image);
-                Paragraph titulo = new Paragraph("ARMÁ TU TORTA");
+                Paragraph titulo = new Paragraph("ARMÁ TU TORTA", f);
                 titulo.setAlignment(Element.ALIGN_CENTER);
                 titulo.setSpacingAfter(20);
                 titulo.setSpacingBefore(20);
                 document.add(titulo);
-                Paragraph idpedido = new Paragraph("Nro. Pedido: "+id);
+                Paragraph idpedido = new Paragraph("Nro. Pedido: "+id, f);
                 document.add(idpedido);
                 //------Local y fecha-----------//
                 float[] columnEncabezado = new float[]{60f, 60f};
                 PdfPTable localfecha= new PdfPTable(2);
                 localfecha.setWidthPercentage(100);
                 localfecha.setWidths(columnEncabezado);
-                PdfPCell localentrega= new PdfPCell(new Phrase("Local de entrega: "+sucursal));
+                PdfPCell localentrega= new PdfPCell(new Phrase("Local de entrega: "+sucursal,f));
                 localentrega.setBorder(Rectangle.NO_BORDER);
                 localfecha.addCell(localentrega);
-                PdfPCell fechapedido = new PdfPCell(new Phrase("Fecha pedido: "+ fecha));
+                PdfPCell fechapedido = new PdfPCell(new Phrase("Fecha pedido: "+ fecha,f));
                 fechapedido.setBorder(Rectangle.NO_BORDER);
                 localfecha.addCell(fechapedido);
                 document.add(localfecha);
@@ -284,10 +290,10 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 PdfPTable clientetelefono= new PdfPTable(2);
                 clientetelefono.setWidthPercentage(100);
                 clientetelefono.setWidths(columnEncabezado);
-                PdfPCell cliente= new PdfPCell(new Phrase("Cliente: "+params[0]));
+                PdfPCell cliente= new PdfPCell(new Phrase("Cliente: "+params[0],f));
                 cliente.setBorder(Rectangle.NO_BORDER);
                 clientetelefono.addCell(cliente);
-                PdfPCell telefono = new PdfPCell(new Phrase("Telefono: "+ params[1]));
+                PdfPCell telefono = new PdfPCell(new Phrase("Telefono: "+ params[1],f));
                 telefono.setBorder(Rectangle.NO_BORDER);
                 clientetelefono.addCell(telefono);
                 document.add(clientetelefono);
@@ -295,17 +301,17 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 PdfPTable fechahora= new PdfPTable(2);
                 fechahora.setWidthPercentage(100);
                 fechahora.setWidths(columnEncabezado);
-                PdfPCell fecha= new PdfPCell(new Phrase("Fecha de entrega: "+params[2]));
+                PdfPCell fecha= new PdfPCell(new Phrase("Fecha de entrega: "+params[2],f));
                 fecha.setBorder(Rectangle.NO_BORDER);
                 fechahora.addCell(fecha);
-                PdfPCell hora = new PdfPCell(new Phrase("Hora de entrega: "+ params[3]));
+                PdfPCell hora = new PdfPCell(new Phrase("Hora de entrega: "+ params[3],f));
                 hora.setBorder(Rectangle.NO_BORDER);
                 fechahora.addCell(hora);
                 document.add(fechahora);
-                Paragraph kilogramos = new Paragraph("Kilogramos: "+params[4]);
+                Paragraph kilogramos = new Paragraph("Kilogramos: "+params[4],f);
                 kilogramos.setSpacingBefore(20);
                 document.add(kilogramos);
-                Paragraph bizcoch = new Paragraph("Bizcochuelo: "+ params[5]);
+                Paragraph bizcoch = new Paragraph("Bizcochuelo: "+ params[5],f);
                 document.add(bizcoch);
                 float[] columnWidths = new float[]{ 61f, 61f};
                 //---Encabezado--//
@@ -313,29 +319,31 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 rellenos.setWidthPercentage(100);
                 rellenos.setWidths(columnWidths);
                 rellenos.setSpacingBefore(5);
-                PdfPCell rellenoUno= new PdfPCell(new Phrase("Relleno 1: "+params[6]));
+                PdfPCell rellenoUno= new PdfPCell(new Phrase("Relleno 1: "+params[6],f));
                 rellenoUno.setBorder(Rectangle.NO_BORDER);
                 rellenos.addCell(rellenoUno);
-                PdfPCell rellenoDos = new PdfPCell(new Phrase("Relleno 2: "+params[7]));
+                PdfPCell rellenoDos = new PdfPCell(new Phrase("Relleno 2: "+params[7],f));
                 rellenoDos.setBorder(Rectangle.NO_BORDER);
                 rellenos.addCell(rellenoDos);
                 document.add(rellenos);
-                Paragraph colores = new Paragraph("Colores: "+params[8]+params[9]+params[10]+params[11]+params[12]+params[13]+params[14]);
+                Paragraph colores = new Paragraph("Colores: "+params[8]+params[9]+params[10]+params[11]+params[12]+params[13]+params[14],f);
                 document.add(colores);
-                Paragraph extras = new Paragraph("Extras: "+params[15]+params[16]+params[17]+params[18]);
+                Paragraph extras = new Paragraph("Extras: "+params[15]+params[16]+params[17]+params[18],f);
                 document.add(extras);
-                Paragraph textoTorta = new Paragraph("Texto: "+params[19]);
+                Paragraph textoTorta = new Paragraph("Texto: "+params[19],f);
                 document.add(textoTorta);
-                Paragraph espacio_adorno = new Paragraph("Espacio para adorno: "+ params[20]);
+                Paragraph espacio_adorno = new Paragraph("Espacio para adorno: "+ params[20],f);
                 document.add(espacio_adorno);
-                Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[21]);
+                Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[21],f);
                 document.add(tomoPedido);
                 ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-                bitmaptorta.compress(Bitmap.CompressFormat.PNG, 100, stream2);
-                Image image2 = Image.getInstance(stream2.toByteArray());
-                image2.scaleToFit(200,200);
-                image2.setAlignment(Element.ALIGN_CENTER);
-                document.add(image2);
+                if(bitmaptorta!=null){
+                   bitmaptorta.compress(Bitmap.CompressFormat.PNG, 100, stream2);
+                   Image image2 = Image.getInstance(stream2.toByteArray());
+                   image2.scaleToFit(300,300);
+                   image2.setAlignment(Element.ALIGN_CENTER);
+                   document.add(image2);
+                }
                 document.close();
             } catch (DocumentException e) {
                 e.printStackTrace();

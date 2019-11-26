@@ -2,9 +2,7 @@ package com.casapan.pedidos.Vista;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -17,9 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -43,7 +38,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,8 +52,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     DatabaseHelper db;
     @BindView(R.id.fab_pedido) FloatingActionButton fabPedido;
     @BindView(R.id.fab_armatutorta) FloatingActionButton fabTorta;
-    String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    public static final int MULTIPLE_PERMISSIONS = 10;
     ListaPedidosAdapter pAdapter;
     @BindView(R.id.recycler_pedidos) RecyclerView recyclerPedido;
     ProgressDialog generarPdf;
@@ -92,10 +84,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
             }
         });
         db = new DatabaseHelper(getActivity());
-        int currentApiVersion = Build.VERSION.SDK_INT;
-        if(currentApiVersion >=  Build.VERSION_CODES.M)        {
-                checkPermission();
-        }
         init(view);
         cargarPedidos();
         ViewAnimation.init(fabPedido);
@@ -210,64 +198,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
     }
 
 
-    private boolean checkPermission() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(getActivity(),p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
-            return false;
-        }
-        return true;
-    }
-
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-            switch (requestCode) {
-                case MULTIPLE_PERMISSIONS:{
-                    if (grantResults.length > 0) {
-                        String permissionsDenied = "";
-                        for (String per : permissions) {
-                            if(grantResults[0] == PackageManager.PERMISSION_DENIED){
-                                permissionsDenied += "\n" + per;
-                                showDialogNotCancelable("Permissions mandatory",
-                                        "All the permissions are required for this app",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                checkPermission();
-                                            }
-                                        });
-                            }
-
-                        }
-
-                    }
-                    return;
-                }
-
-        }
-    }
-
-    private void showDialogNotCancelable(String title, String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setCancelable(false)
-                .create()
-                .show();
-    }
-
-    @Override
-    public void mostrarPedidos() {
-
-    }
-
     @Override
     public void mostrarPdf(String path) {
         generarPdf.finishDialog();
@@ -304,4 +234,8 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
        }
    }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+    }
 }

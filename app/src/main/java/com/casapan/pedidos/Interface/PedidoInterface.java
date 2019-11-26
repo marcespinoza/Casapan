@@ -7,14 +7,12 @@ import java.util.ArrayList;
 public interface PedidoInterface {
 
     interface Vista{
-        void mostrarPedidos();
         void mostrarPdf(String id);
         void mostrarPedidoTorta(ArrayList<String>ptorta);
         void mostrarError(String mensaje);
     }
 
     interface Presentador{
-        void getPedidos();
         void mostrarPedidos();
         void armarPedidoTorta(String idpedido, String[] params, Bitmap bitmaptorta);
         void generarPdf(String[] params, ArrayList<ListItem> pedidos);

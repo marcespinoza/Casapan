@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,7 @@ public class CategoriaDialog extends DialogFragment {
     EditText nombre;
     MaterialButton aceptar;
     DatabaseHelper db;
+    TextView error;
     private DissmissListener dissmissListener;
 
     @Nullable
@@ -34,6 +37,7 @@ public class CategoriaDialog extends DialogFragment {
         db = new DatabaseHelper(getContext());
         aceptar = rootView.findViewById(R.id.agregarcategoria);
         aceptar.setEnabled(false);
+        error = rootView.findViewById(R.id.errorcategoria);
         nombre = rootView.findViewById(R.id.nombrecategoria);
         nombre.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,8 +78,12 @@ public class CategoriaDialog extends DialogFragment {
     }
 
     public void agregarArticulo(String nombre){
-        db.insertarCategoria(nombre);
-        dismiss();
+        if(!db.existeCategoria(nombre)){
+          db.insertarCategoria(nombre);
+          dismiss();
+        }else{
+            error.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

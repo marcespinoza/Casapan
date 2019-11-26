@@ -48,7 +48,7 @@ public class FragmentArticulo extends Fragment {
     CategoriaDialog catDialog;
     DatabaseHelper dbh;
     ArrayList<ListItem> list = new ArrayList<>();
-
+    ArrayList<Articulo> lArt;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -74,7 +74,6 @@ public class FragmentArticulo extends Fragment {
         agregarArt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clear();
                 agregarArticulo();
             }
         });
@@ -96,18 +95,24 @@ public class FragmentArticulo extends Fragment {
 
     public void agregarArticulo(){
         Categoria categoria = (Categoria) spinnercategorias.getSelectedItem();
+        String nombre_articulo = nombreArt.getText().toString();
         if(spinnercategorias.getSelectedItemPosition()!=0){
-        if(!nombreArt.getText().toString().isEmpty()){
+        if(!nombre_articulo.isEmpty()){
+           if(!dbh.existeArticulo(nombre_articulo)){
            boolean bol = dbh.insertarArticulo(nombreArt.getText().toString(), categoria.getId());
             if(bol){
                 nombreArt.setText("");
+                clear();
                 cargarArticulos();
             }
+           }else{
+               Toast.makeText(getContext(), "Articulo existente", Toast.LENGTH_SHORT).show();
+           }
          }else{
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    Toast.makeText(getContext(), "Ingrese un nombre de articulo", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -134,7 +139,7 @@ public class FragmentArticulo extends Fragment {
     }
 
     public void cargarArticulos(){
-        ArrayList<Articulo> lArt = dbh.getArticulosPorCategoria();
+        lArt = dbh.getArticulosPorCategoria();
         String categoria = "";
         for(int i = 0; i < lArt.size(); i++){
             if(!categoria.equals(lArt.get(i).getCategoria())){
@@ -163,13 +168,18 @@ public class FragmentArticulo extends Fragment {
                 String id = list.get(position).getId();
                 String descripcion = adapter.getNombre(position);
                 if(direction == ItemTouchHelper.LEFT)  {
-                    if(!lArt.get(position).isHeader()){
+                    if(!list.get(position).isHeader()){
                          int response = dbh.borrarArticulo(id);
                          if(response!=-1)
                          Toast.makeText(getActivity(), "Articulo eliminado", Toast.LENGTH_SHORT).show();
                          adapter.removeItem(position);
                     }else{
-
+                         int response = dbh.borrarCategoria(id);
+                         if(response!=-1){
+                             dbh.borrarArticuloPorCategoria(id);
+                             clear();
+                             cargarArticulos();
+                         }
                     }
                 }
                 else if (direction == ItemTouchHelper.RIGHT)

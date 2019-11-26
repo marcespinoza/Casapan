@@ -35,6 +35,8 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha04'
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.ajts.androidmads.SQLite2Excel:library:1.0.4'
+    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'com.itextpdf:itextg:5.5.10'
     testImplementation 'junit:junit:4.12'

@@ -18,10 +18,6 @@ public class PedidoPresentador implements PedidoInterface.Presentador {
         modelo = new PedidoModelo(this);
     }
 
-    @Override
-    public void getPedidos() {
-
-    }
 
     @Override
     public void mostrarPedidos() {

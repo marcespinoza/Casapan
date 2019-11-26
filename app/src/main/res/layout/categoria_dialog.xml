@@ -21,6 +21,15 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/errorcategoria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Categoria existente"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        android:textColor="@color/red_200"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/agregarcategoria"
         android:layout_width="wrap_content"

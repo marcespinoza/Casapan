@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +26,7 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.casapan.pedidos.R;
@@ -94,18 +96,18 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.chantillyanana2) RadioButton chantillyanana2;
     @BindView(R.id.mousefrutilla2) RadioButton mousse2;
     //----Colores-----------//
-    @BindView(R.id.blanco) RadioButton rblanco;
-    @BindView(R.id.amarillo) RadioButton ramarillo;
-    @BindView(R.id.rosado) RadioButton rrosado;
-    @BindView(R.id.lila) RadioButton rlila;
-    @BindView(R.id.verde) RadioButton rverde;
-    @BindView(R.id.celeste) RadioButton rceleste;
-    @BindView(R.id.anaranjado) RadioButton ranaranjado;
+    @BindView(R.id.blanco)  CheckBox rblanco;
+    @BindView(R.id.amarillo) CheckBox ramarillo;
+    @BindView(R.id.rosado) CheckBox rrosado;
+    @BindView(R.id.lila) CheckBox rlila;
+    @BindView(R.id.verde) CheckBox rverde;
+    @BindView(R.id.celeste) CheckBox rceleste;
+    @BindView(R.id.anaranjado) CheckBox ranaranjado;
     //-----Extras-------//
-    @BindView(R.id.cereza) RadioButton rcereza;
-    @BindView(R.id.mani) RadioButton rmani;
-    @BindView(R.id.chipchocolate) RadioButton rchipchocolate;
-    @BindView(R.id.baniochocolate) RadioButton rbaniochocolate;
+    @BindView(R.id.cereza) CheckBox rcereza;
+    @BindView(R.id.mani) CheckBox rmani;
+    @BindView(R.id.chipchocolate) CheckBox rchipchocolate;
+    @BindView(R.id.baniochocolate) CheckBox rbaniochocolate;
     //---Fin extras------//
     @BindView(R.id.textotorta) EditText textotorta;
     @BindView(R.id.adorno) RadioGroup adornoRadio;
@@ -114,6 +116,8 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.tomopedido) EditText tomopedido;
 
     @BindView(R.id.imagetorta) ImageView imagentorta;
+    @BindView(R.id.clearadorno) ImageButton limpiaradorno;
+    @BindView(R.id.clearimagen) ImageButton limpiarimagen;
     Bitmap bitmaptorta = null;
     String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
     String adorno = "";
@@ -136,6 +140,19 @@ public class TortaDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.torta_dialog,container);
         ButterKnife.bind(this, rootView);
+        limpiaradorno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adornoRadio.clearCheck();
+            }
+        });
+        limpiarimagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imagentorta.setImageResource( R.drawable.ic_image);
+                bitmaptorta = null;
+            }
+        });
         sucursal = Constants.getSPreferences(getContext()).getNombreSucursal();
         generarPdf = new ProgressDialog(getContext());
         imagentorta.setOnClickListener(new View.OnClickListener() {
@@ -177,14 +194,6 @@ public class TortaDialog extends DialogFragment {
         }
         return rootView;
     }
-
-  /*  private void openGallery(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICKER);
-
-    }*/
 
     private void showPictureDialog(){
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(getContext());
@@ -300,7 +309,6 @@ public class TortaDialog extends DialogFragment {
                 try {
                     bitmaptorta = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
                     imagentorta.setImageBitmap(bitmaptorta);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
