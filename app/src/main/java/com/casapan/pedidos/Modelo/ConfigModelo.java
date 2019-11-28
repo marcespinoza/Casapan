@@ -29,7 +29,7 @@ public class ConfigModelo implements ConfigInterface.Modelo {
 
     @Override
     public void importarbd(String path) {
-        ExcelToSQLite excelToSQLite = new ExcelToSQLite(context, "casapanpedidos.db", true);
+        ExcelToSQLite excelToSQLite = new ExcelToSQLite(context, "casapanpedidos.db", false);
         excelToSQLite.importFromFile(path, new ExcelToSQLite.ImportListener() {
             @Override
             public void onStart() {

@@ -187,7 +187,7 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 document.add(table);
                 boolean renglon = false;
                 for(int i = 0; i < pedidos.size(); i++){
-                    if(!pedidos.get(i).isHeader()){
+                    if(!pedidos.get(i).isHeader() && !pedidos.get(i).getCantidad().equals("0")){
                     PdfPTable tablelineapedido = new PdfPTable(3);
                     tablelineapedido.setWidthPercentage(100);
                     tablelineapedido.setWidths(columnWidths);

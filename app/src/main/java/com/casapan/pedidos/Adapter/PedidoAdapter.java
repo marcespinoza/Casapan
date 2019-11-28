@@ -2,6 +2,7 @@ package com.casapan.pedidos.Adapter;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<ListItem> aList;
-    private ArrayList<ListItem> editPedidos = null;
+    private ArrayList<ListItem> editPedidos;
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
@@ -33,11 +34,13 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return new PedidoAdapter.HeaderHolder(layoutView);
         } else if (viewType == TYPE_ITEM) {
             View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_articulo_pedido, parent, false);
-            return new PedidoAdapter.ArticuloHolder(layoutView);
+            return new PedidoAdapter.ArticuloHolder(layoutView, new CantidadTextListener(), new StockTextListener());
         }
         else
             throw new RuntimeException("Could not inflate layout");
     }
+
+
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -45,7 +48,9 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ArticuloHolder articuloHolder = (ArticuloHolder) holder;
             articuloHolder.descArticulo.setText(aList.get(position).getNombre());
             articuloHolder.cantidad.setShowSoftInputOnFocus(false);
-            articuloHolder.cantidad.addTextChangedListener(new TextWatcher() {
+            articuloHolder.cantidadTextListener.updatePosition(holder.getAdapterPosition());
+            articuloHolder.stockTextListener.updatePosition(holder.getAdapterPosition());
+            /*articuloHolder.cantidad.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -58,11 +63,13 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void afterTextChanged(Editable e) {
+                    Log.i("POSITION",""+position);
+
                     aList.get(position).setCantidad(e.toString());
                 }
-            });
+            });*/
             articuloHolder.stock.setShowSoftInputOnFocus(false);
-            articuloHolder.stock.addTextChangedListener(new TextWatcher() {
+            /*articuloHolder.stock.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -77,18 +84,18 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 public void afterTextChanged(Editable e) {
                     aList.get(position).setStock(e.toString());
                 }
-            });
-            articuloHolder.cantidad.setText("0");
-            articuloHolder.stock.setText("0");
-            if(editPedidos!=null){
+            });*/
+            articuloHolder.cantidad.setText(aList.get(holder.getAdapterPosition()).getCantidad());
+            articuloHolder.stock.setText(aList.get(holder.getAdapterPosition()).getStock());
+            /*if(editPedidos!=null){
             for (ListItem listItem : editPedidos) {
-                if (listItem.getNombre().equalsIgnoreCase(aList.get(position).getNombre())) {
+                if (listItem.getNombre()!=null && listItem.getNombre().equalsIgnoreCase(aList.get(position).getNombre()) ) {
                     articuloHolder.cantidad.setText(listItem.getCantidad());
                     articuloHolder.stock.setText(listItem.getStock());
                     aList.get(position).setIdLineaPedido(listItem.getId());
                 }
               }
-            }
+            }*/
             articuloHolder.agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +136,10 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     @Override
     public int getItemCount() {
@@ -154,18 +164,24 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public TextView descArticulo;
         public ImageButton agregar, quitar;
         EditText cantidad, stock;
+        public StockTextListener stockTextListener;
+        public CantidadTextListener cantidadTextListener;
 
-        public ArticuloHolder(View view) {
+        public ArticuloHolder(View view, CantidadTextListener cantidadTextListener, StockTextListener stockTextListener) {
             super(view);
+            this.stockTextListener = stockTextListener;
+            this.cantidadTextListener = cantidadTextListener;
             descArticulo = view.findViewById(R.id.descarticulo);
             agregar = view.findViewById(R.id.agregar);
             quitar = view.findViewById(R.id.quitar);
             cantidad = view.findViewById(R.id.cantidadart);
+            cantidad.addTextChangedListener(cantidadTextListener);
             stock =  view.findViewById(R.id.stock);
+            stock.addTextChangedListener(stockTextListener);
         }
     }
 
-    public static class HeaderHolder extends RecyclerView.ViewHolder {
+    public class HeaderHolder extends RecyclerView.ViewHolder {
 
         TextView nombreCategoria;
 
@@ -174,5 +190,51 @@ public class PedidoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             nombreCategoria = itemView.findViewById(R.id.nombrecategoria);
         }
     }
-    
+
+    private class StockTextListener implements TextWatcher {
+        private int position;
+
+        public void updatePosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable e) {
+            aList.get(position).setStock(e.toString());
+        }
+    }
+
+    private class CantidadTextListener implements TextWatcher {
+        private int position;
+
+        public void updatePosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable e) {
+            aList.get(position).setCantidad(e.toString());
+        }
+    }
+
 }

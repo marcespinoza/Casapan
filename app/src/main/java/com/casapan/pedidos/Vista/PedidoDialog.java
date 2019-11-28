@@ -118,6 +118,15 @@ public class PedidoDialog extends DialogFragment {
             articulo.setCantidad("0");
             articulo.setStock("0");
             aList.add(articulo);
+            if(editPedidos!=null){
+                for (ListItem listItem : editPedidos) {
+                    if (listItem.getNombre()!=null && listItem.getNombre().equalsIgnoreCase(articulo.getNombre()) ) {
+                        articulo.setCantidad(listItem.getCantidad());
+                        articulo.setStock(listItem.getStock());
+                        articulo.setIdLineaPedido(listItem.getId());
+                    }
+                }
+            }
         }
 
         artAdapter = new PedidoAdapter(aList, editPedidos);
