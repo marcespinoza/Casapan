@@ -176,9 +176,13 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                    }else{
                        db.borrarExtra(id);
                    }
-                    if(response!=-1)
-                        Toast.makeText(getActivity(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
-                    pAdapter.removeItem(position);
+                    if(response!=-1){
+                     Toast.makeText(getActivity(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
+                     lPedido.remove(position);
+                     pAdapter.removeItem(position);
+                     pAdapter.notifyItemRangeChanged(position, lPedidos.size());
+                     pAdapter.notifyItemRemoved(position);
+                    }
                 }
                 else if (direction == ItemTouchHelper.RIGHT) {
                     pAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
@@ -188,8 +192,6 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                     }else{
                         presentador.actualizarPedidoTorta(id);
                     }
-
-
                 }
             }
         };

@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="17dp"
+            android:gravity="center_horizontal"
+            android:text="ARMA TU TORTA"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/cliente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:hint="Cliente" />
+
+            <EditText
+                android:id="@+id/telefono"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Telefono"
+                android:textSize="15sp"
+                android:inputType="phone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/fechaentrega"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:textSize="15sp"
+                android:hint="Fch. entrega" />
+
+            <ImageButton
+                android:id="@+id/fechapicker"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:textSize="15sp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_calendar"/>
+
+            <EditText
+                android:id="@+id/horaentrega"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:hint="Hora entrega"
+                android:textSize="15sp"
+                android:inputType="phone" />
+
+            <ImageButton
+                android:id="@+id/horapicker"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_clock"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="7dp"
+                android:fontFamily="@font/robotobold"
+                android:text="Kilogramos" />
+
+            <RadioGroup
+                android:id="@+id/kilogramo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/treskg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="3" />
+
+                <RadioButton
+                    android:id="@+id/cuatrokg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="4" />
+
+                <RadioButton
+                    android:id="@+id/cincokg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="5" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:fontFamily="@font/robotobold"
+                android:text="Bizcochuelo" />
+
+            <RadioGroup
+                android:id="@+id/bizcochuelo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/bchocolate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layoutDirection="rtl"
+                android:textSize="12sp"
+                android:text="Chocolate" />
+
+            <RadioButton
+                android:id="@+id/bvainilla"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layoutDirection="rtl"
+                android:textSize="12sp"
+                android:text="Vainilla" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Relleno 1" />
+
+                <RadioGroup
+                    android:id="@+id/rellenouno"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/ddeleche"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Dulce de leche"
+                    android:textSize="12sp"/>
+
+                <RadioButton
+                    android:id="@+id/hojaldre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con hojaldre" />
+
+                <RadioButton
+                    android:id="@+id/chocolate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="D. leche con chocolate"
+                    android:textSize="12sp"/>
+
+                <RadioButton
+                    android:id="@+id/rocklet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con rocklet" />
+
+                <RadioButton
+                    android:id="@+id/durazno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con durazno" />
+
+                <RadioButton
+                    android:id="@+id/chantilly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema chantilly" />
+
+                <RadioButton
+                    android:id="@+id/americana"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema americana" />
+
+                <RadioButton
+                    android:id="@+id/moca"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema moca" />
+
+                <RadioButton
+                    android:id="@+id/bombon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema bombón" />
+
+                <RadioButton
+                    android:id="@+id/chantdurazno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Chantilly con durazno" />
+
+                <RadioButton
+                    android:id="@+id/chantillyanana"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Chantilly con ananá" />
+
+                <RadioButton
+                    android:id="@+id/mousefrutilla"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Mousse de frutilla" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Relleno 2" />
+
+                <RadioGroup
+                    android:id="@+id/rellenodos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/ddeleche2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Dulce de leche" />
+
+                <RadioButton
+                    android:id="@+id/hojaldre2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con hojaldre" />
+
+                <RadioButton
+                    android:id="@+id/chocolate2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con chocolate" />
+
+                <RadioButton
+                    android:id="@+id/rocklet2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con rocklet" />
+
+                <RadioButton
+                    android:id="@+id/durazno2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="D. leche con durazno" />
+
+                <RadioButton
+                    android:id="@+id/chantilly2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema chantilly" />
+
+                <RadioButton
+                    android:id="@+id/americana2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema americana" />
+
+                <RadioButton
+                    android:id="@+id/moca2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema moca" />
+
+                <RadioButton
+                    android:id="@+id/bombon2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Crema bombón" />
+
+                <RadioButton
+                    android:id="@+id/chantdurazno2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Chantilly con durazno" />
+
+                <RadioButton
+                    android:id="@+id/chantillyanana2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Chantilly con ananá" />
+
+                <RadioButton
+                    android:id="@+id/mousefrutilla2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:textSize="12sp"
+                    android:text="Mousse de frutilla" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DECORACION. CREMA CHANTILLY. COLORES (siempre tonos pasteles)" />
+
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/blanco"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Blanco" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/amarillo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Amarillo" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/rosado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Rosado" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/lila"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Lila" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/verde"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Verde" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/celeste"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Celeste" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/anaranjado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Anaranjado" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EXTRAS" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/cereza"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Cereza" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/mani"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Maní" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/chipchocolate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Chip de chocolate" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/baniochocolate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Baño choc. cara superior" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/textotorta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="TEXTO" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:text="ESPACIO PARA ADORNO: "/>
+
+            <RadioGroup
+                android:id="@+id/adorno"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/adornosi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="SI"/>
+
+            <RadioButton
+                android:id="@+id/adornono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="NO"/>
+
+            </RadioGroup>
+
+            <ImageButton
+                android:id="@+id/clearadorno"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:background="@drawable/ic_close" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imagetorta"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="3dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_image"/>
+
+            <ImageButton
+                android:id="@+id/clearimagen"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layout_gravity="top"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_close" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <EditText
+            android:id="@+id/tomopedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tomó el pedido"/>
+
+        <LinearLayout
+            android:id="@+id/botones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/aceptartorta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginRight="5dp"
+                app:rippleColor="@color/grey_200"
+                app:backgroundTint="@color/blue_A400"
+                app:cornerRadius="10dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@color/blue_A400"
+                android:text="Aceptar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelartorta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/white"
+                app:rippleColor="@color/grey_200"
+                app:backgroundTint="@color/red_300"
+                app:cornerRadius="10dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@color/red_300"
+                android:text="Cancelar" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
