@@ -108,6 +108,7 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.mani) CheckBox rmani;
     @BindView(R.id.chipchocolate) CheckBox rchipchocolate;
     @BindView(R.id.baniochocolate) CheckBox rbaniochocolate;
+    @BindView(R.id.baniochocolatepompon) CheckBox rbaniochocolatepompon;
     //---Fin extras------//
     @BindView(R.id.textotorta) EditText textotorta;
     @BindView(R.id.adorno) RadioGroup adornoRadio;
@@ -118,8 +119,9 @@ public class TortaDialog extends DialogFragment {
     @BindView(R.id.imagetorta) ImageView imagentorta;
     @BindView(R.id.clearadorno) ImageButton limpiaradorno;
     @BindView(R.id.clearimagen) ImageButton limpiarimagen;
+    @BindView(R.id.observaciontorta) EditText obs;
     Bitmap bitmaptorta = null;
-    String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate;
+    String  idpedido, sucursal, kg, bizcochuelo, relleno1, relleno2,  blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate, baniochocolatepompon;
     String adorno = "";
     ProgressDialog generarPdf;
     ArrayList<String> ptorta;
@@ -380,13 +382,15 @@ public class TortaDialog extends DialogFragment {
         rmani.setChecked(ptorta.get(17).equals("")?false:true);
         rchipchocolate.setChecked(ptorta.get(18).equals("")?false:true);
         rbaniochocolate.setChecked(ptorta.get(19).equals("")?false:true);
-        textotorta.setText(ptorta.get(20));
-        String adorno = ptorta.get(21);
+        rbaniochocolatepompon.setChecked(ptorta.get(20).equals("")?false:true);
+        textotorta.setText(ptorta.get(21));
+        String adorno = ptorta.get(22);
         switch (adorno){
             case "Si": adornosi.setChecked(true); break;
             case "No": adornono.setChecked(true); break;
          }
-         tomopedido.setText(ptorta.get(22));
+        obs.setText(ptorta.get(23));
+        tomopedido.setText(ptorta.get(24));
     }
 
     public void enviarPedido(){
@@ -395,6 +399,7 @@ public class TortaDialog extends DialogFragment {
         String fch =  fechatexto.getText().toString();
         String hora = horatexto.getText().toString();
         String texto_torta = textotorta.getText().toString();
+        String observaciones = obs.getText().toString();
         String tomo_pedido = tomopedido.getText().toString();
         blanco = rblanco.isChecked()? "- Blanco -": "";
         amarillo = ramarillo.isChecked()? "- Amarillo -": "";
@@ -407,7 +412,8 @@ public class TortaDialog extends DialogFragment {
         mani = rmani.isChecked()? "- Mani -": "";
         chipchocolate = rchipchocolate.isChecked()? "- Chip de chocolate -": "";
         baniochocolate = rbaniochocolate.isChecked()? "- Baño chocolate cara superior -": "";
-        String [] params = {client, tel, fch, hora, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate,texto_torta, adorno, tomo_pedido};
+        baniochocolatepompon = rbaniochocolatepompon.isChecked()? "- Baño chocolate cara superior con pompones de dulce de leche -": "";
+        String [] params = {client, tel, fch, hora, kg, bizcochuelo, relleno1, relleno2, blanco, amarillo, rosado, lila, verde, celeste, anaranjado, cereza, mani, chipchocolate, baniochocolate, baniochocolatepompon, texto_torta, adorno, observaciones, tomo_pedido};
         onAceptarBoton.enviarpath(idpedido, params, bitmaptorta);
         dismiss();
     }

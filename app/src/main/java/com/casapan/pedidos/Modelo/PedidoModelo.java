@@ -328,13 +328,15 @@ public class PedidoModelo implements PedidoInterface.Modelo {
                 document.add(rellenos);
                 Paragraph colores = new Paragraph("Colores: "+params[8]+params[9]+params[10]+params[11]+params[12]+params[13]+params[14],f);
                 document.add(colores);
-                Paragraph extras = new Paragraph("Extras: "+params[15]+params[16]+params[17]+params[18],f);
+                Paragraph extras = new Paragraph("Extras: "+params[15]+params[16]+params[17]+params[18]+params[19],f);
                 document.add(extras);
-                Paragraph textoTorta = new Paragraph("Texto: "+params[19],f);
+                Paragraph textoTorta = new Paragraph("Texto: "+params[20],f);
                 document.add(textoTorta);
-                Paragraph espacio_adorno = new Paragraph("Espacio para adorno: "+ params[20],f);
+                Paragraph espacio_adorno = new Paragraph("Espacio para adorno: "+ params[21],f);
                 document.add(espacio_adorno);
-                Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[21],f);
+                Paragraph observacion = new Paragraph("Observaciones: "+ params[22],f);
+                document.add(observacion);
+                Paragraph tomoPedido = new Paragraph("Tomó pedido: "+params[23],f);
                 document.add(tomoPedido);
                 ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
                 if(bitmaptorta!=null){

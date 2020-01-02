@@ -10,6 +10,8 @@ import com.casapan.pedidos.App.GlobalApplication;
 import com.casapan.pedidos.Interface.ConfigInterface;
 import com.casapan.pedidos.Util.Constants;
 
+import java.util.ArrayList;
+
 public class ConfigModelo implements ConfigInterface.Modelo {
 
     public ConfigInterface.Presentador ipresentador;
@@ -51,8 +53,12 @@ public class ConfigModelo implements ConfigInterface.Modelo {
 
     @Override
     public void exportarbd() {
+        String sucursal = Constants.getSPreferences(context).getNombreSucursal();
+        ArrayList<String> columnsToExclude = new ArrayList<String>();
+        columnsToExclude.add("sqlite_sequence");
         sqliteToExcel = new SQLiteToExcel(context, "casapanpedidos.db", Environment.getExternalStorageDirectory().getPath() + "/Casapan");
-        sqliteToExcel.exportAllTables("casapandb.xls", new SQLiteToExcel.ExportListener() {
+        sqliteToExcel.setExcludeColumns(columnsToExclude);
+        sqliteToExcel.exportAllTables("casapandb"+sucursal+".xls", new SQLiteToExcel.ExportListener() {
             @Override
             public void onStart() {
 

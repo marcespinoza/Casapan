@@ -544,6 +544,13 @@
                     android:layoutDirection="rtl"
                     android:text="Baño choc. cara superior" />
 
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/baniochocolatepompon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:text="Baño choc. cara superior con pompones de dulce de leche" />
+
 
             </LinearLayout>
 
@@ -643,6 +650,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Tomó el pedido"/>
+
+        <EditText
+            android:id="@+id/observaciontorta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Observaciones"/>
 
         <LinearLayout
             android:id="@+id/botones"

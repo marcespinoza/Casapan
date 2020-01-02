@@ -81,7 +81,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "mani" + " INTEGER ,"+
             "chipchocolate" + " INTEGER ,"+
             "baniochocolate" + " INTEGER ,"+
-             "pathimagen" + " INTEGER );";
+            "baniochocolatepompon" + " INTEGER ,"+
+            "pathimagen" + " INTEGER );";
 
 
 
@@ -141,10 +142,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("bizcochuelo", params[5]);
         contentValues.put("relleno1", params[6]);
         contentValues.put("relleno2", params[7]);
-        contentValues.put("textotorta", params[19]);
-        contentValues.put("adorno", params[20]);
-        contentValues.put("usuario", params[21]);
-        contentValues.put("observacion", "Cliente: "+params[0]);
+        contentValues.put("textotorta", params[20]);
+        contentValues.put("adorno", params[21]);
+        contentValues.put("observacion", params[22]);
+        contentValues.put("usuario", params[23]);
         long id = db.insert("pedido", null, contentValues);
         insertarExtra(params, id);
         return id;
@@ -165,6 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("mani", params[16]);
         contentValues.put("chipchocolate", params[17]);
         contentValues.put("baniochocolate", params[18]);
+        contentValues.put("baniochocolatepompon", params[19]);
         long id = db.insert("extra", null, contentValues);
         return id;
     }
@@ -265,10 +267,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("bizcochuelo", params[5]);
         contentValues.put("relleno1", params[6]);
         contentValues.put("relleno2", params[7]);
-        contentValues.put("textotorta", params[19]);
-        contentValues.put("adorno", params[20]);
-        contentValues.put("usuario", params[21]);
-        contentValues.put("observacion", "Cliente: "+params[0]);
+        contentValues.put("textotorta", params[20]);
+        contentValues.put("adorno", params[21]);
+        contentValues.put("usuario", params[23]);
+        contentValues.put("observacion", params[22]);
         db.update("pedido", contentValues, "id = ?", new String[] { id} );
         long update = updateExtra(id, params);
         return update;
@@ -288,6 +290,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("mani", params[16]);
         contentValues.put("chipchocolate", params[17]);
         contentValues.put("baniochocolate", params[18]);
+        contentValues.put("baniochocolatepompon", params[19]);
         long idupdate = db.update("extra", contentValues, "id = ?", new String[] { id} );
         return idupdate;
     }
@@ -417,12 +420,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select p.id, p.cliente, p.telefono, p.fecha_entrega, " +
                                     "p.hora_entrega, p.kilo, p.bizcochuelo, p.relleno1, p.relleno2, " +
-                                    " e.blanco, e.amarillo, e.rosado,e.lila, e.verde, e.celeste, e.anaranjado," +
-                                    " e.cereza, e.mani, e.chipchocolate, e.baniochocolate, p.textotorta, p.adorno, " +
-                                    "p.usuario from pedido p inner join extra e on p.id=e.id_pedido where p.id="+id+"" , null );
+                                    " e.blanco, e.amarillo, e.rosado, e.lila, e.verde, e.celeste, e.anaranjado," +
+                                    " e.cereza, e.mani, e.chipchocolate, e.baniochocolate, e.baniochocolatepompon, p.textotorta, p.adorno, " +
+                                    " p.observacion, p.usuario from pedido p inner join extra e on p.id=e.id_pedido where p.id="+id+"" , null );
 
         if(res.moveToFirst()){
-            for(int i = 0; i <=22; i++){
+            for(int i = 0; i <=24; i++){
              ptorta.add(res.getString(i));
             }
         }return ptorta;

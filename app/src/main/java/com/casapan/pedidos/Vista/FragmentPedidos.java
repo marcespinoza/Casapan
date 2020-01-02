@@ -178,7 +178,7 @@ public class FragmentPedidos extends Fragment implements PedidoInterface.Vista {
                    }
                     if(response!=-1){
                      Toast.makeText(getActivity(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
-                     lPedido.remove(position);
+                     lPedidos.remove(position);
                      pAdapter.removeItem(position);
                      pAdapter.notifyItemRangeChanged(position, lPedidos.size());
                      pAdapter.notifyItemRemoved(position);
